@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="account_invoice_aeroo_ods" model="ir.actions.report.xml">
+            <field name="name">Account Invoice Excel</field>
+            <field name="type">ir.actions.report.xml</field>
+            <field name="model">account.invoice</field>
+            <field name="report_name">account_invoice_ods</field>
+            <field name="report_type">aeroo</field>
+            <field name="in_format">oo-ods</field>
+            <!--field name="out_format" ref="report_aeroo_ooo.report_mimetypes_csv_ods"/>
+            <field name="content_fname">csv</field-->
+            <field name="parser_loc">partner_extended/report/account_invoice_report.py</field>
+            <field name="report_rml">partner_extended/report/account_invoice_report.ods</field>
+            <field name="parser_state">loc</field>
+            <field name="tml_source">file</field>
+        </record>
+
+        <record id="account_invoice_aeroo_ods_vals" model="ir.values">
+            <field name="name">account_invoice_ods_report</field>
+            <field name="model">account.invoice</field>
+            <field eval="'client_print_multi'" name="key2"/>
+            <field eval="'ir.actions.report.xml,' +str(account_invoice_aeroo_ods)" name="value_unpickle"/>
+        </record>
+      </data>
+</openerp>

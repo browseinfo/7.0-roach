@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<record id="view_manufacture_order_graph1" model="ir.ui.view">
+		<field name="name">view.manufacture.order.graph1</field>
+		<field name="model">mrp.production</field>
+		<field name="priority" eval="32"/>
+		<field name="arch" type="xml">
+		    <graph string="products" type="bar">
+		        <field name="product_id"/>
+		        <!--field name="price_total"/-->
+		    </graph>
+		</field>
+	</record>
+
+        <record model="ir.actions.act_window" id="action_manufacture_order_graph1">
+            <field name="name">Products</field>
+            <field name="res_model">mrp.production</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="view_manufacture_order_graph1"/>
+         </record>
+
+        <record id="board_manufacture_order_product_form" model="ir.ui.view">
+            <field name="name">board.manufacture.order.product.form</field>
+            <field name="model">board.board</field>
+            <field name="arch" type="xml">
+                <form string="Manufacture Order board" version="7.0">
+                    <board style="2-1">
+                        <column>
+                            <action name="%(action_manufacture_order_graph1)d" string="Products"/>
+                        </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_manufacture_order_graph1">
+            <field name="name">Top Products</field>
+            <field name="res_model">board.board</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="board_manufacture_order_product_form"/>
+         </record>
+
+
+        <menuitem   id="menu_board_manufacture_order1" 
+                    parent="base.menu_reporting_dashboard" 
+                    action="action_manufacture_order_graph1" 
+                    sequence="30" 
+                    />
+
+    </data>
+</openerp>

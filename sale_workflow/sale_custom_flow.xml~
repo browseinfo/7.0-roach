@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    <record id="view_sale_order_inherit_flow" model="ir.ui.view">
+        <field name="name">sale.order.work.state</field>
+        <field name="model">sale.order</field>
+		<field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+			<xpath expr="//form/header//field[@name='state']" position="replace">
+				<button name="sale_approved" type="object" states="manual" string="Approve" groups="base.group_user" class="oe_highlight"/>
+				<field name="state" widget="statusbar" statusbar_visible="manual,sent,invoiced,done" statusbar_colors='{"invoice_except":"red","waiting_date":"blue"}'/>
+			</xpath>
+
+           <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d']" position="replace">
+				<button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
+                            type="action" states="manual,approved" class="oe_highlight" groups="base.group_user"/>
+           </xpath>
+          <field name="date_order" position="after">
+              <field name="send_order" invisible="1"/>
+          </field>
+    	  <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d']" position="after">
+			<button name="action_send_to_order" string="Send to Order" type="object" class="oe_highlight" attrs="{'invisible': ['|',('send_order', '=', True), ('state', 'not in', 'approved')]}"/>
+		  </xpath>      
+
+	<xpath expr="//field[@name='client_order_ref']" position="after">
+		<field name="order_priority"/>
+	</xpath> 
+        </field>
+    </record>
+
+    <record id="view_sale_stock_inherit_flow" model="ir.ui.view">
+        <field name="name">sale.stock.work.state</field>
+        <field name="model">sale.order</field>
+		<field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
+        <field name="arch" type="xml">
+
+           <xpath expr="//button[@name='action_view_delivery']" position="replace">
+               <button name="action_view_delivery" string="View Delivery Order" type="object" class="oe_highlight"
+                   attrs="{'invisible': ['|','|','|',('picking_ids','=',False),('picking_ids','=',[]), ('state', 'not in', ('approved','progress','manual')),('shipped','=',True)]}" groups="base.group_user"/>
+           </xpath>
+
+        </field>
+    </record>
+          
+
+    <record id="view_manufacture_inherit_form1" model="ir.ui.view">
+        <field name="name">mrp.production.inherit.priority.form</field>
+        <field name="model">mrp.production</field>
+	<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+           <xpath expr="//field[@name='priority']" position="replace">
+               <field name="priority"/>
+           </xpath>
+	    <field name="origin" position="after">
+	        <field name="section_id"/>
+		<field name="send_mail" invisible="1"/>
+	    </field>
+        </field>
+    </record>
+
+    <record id="view_manufacture_inherit_tree1" model="ir.ui.view">
+        <field name="name">mrp.production.inherit.priority.tree</field>
+        <field name="model">mrp.production</field>
+	<field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='routing_id']" position="before">
+                <field name="priority"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_suppiler_represent" model="ir.ui.view">
+        <field name="name">res.partner.supplier.represent.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+	        <field name="supplier_representative"/>
+	    </xpath>                
+        </field>
+    </record> 
+
+    <record id="view_purchase_order_represent1" model="ir.ui.view">
+        <field name="name">purchase_order_represent1.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='dest_address_id']" position="after">
+	        <field name="supplier_representative"/>
+	    </xpath>               
+        </field>
+    </record> 
+
+	<record id="view_mrp_production_filter_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.select.inherit1</field>
+            <field name="model">mrp.production</field>
+	    <field name="inherit_id" ref="mrp.view_mrp_production_filter"/>
+            <field name="arch" type="xml">
+                    <filter string="Date" position="after">
+			<filter name="Priority" context="{'group_by':'priority'}"/>
+		    </filter>
+                    <separator/>
+            </field>
+        </record>
+
+        <record id="manufacture_team_section_view_form" model="ir.ui.view">
+            <field name="name">manufacture.team.section.form</field>
+            <field name="model">manufacture.team.section</field>
+            <field name="arch" type="xml">
+                <form string="Manufacture Team" version="7.0">
+                    <group>
+                        <group>
+                            <field name="name" colspan="2"/>
+                            <field name="parent_id"/>
+                        </group>
+
+                        <group>
+                            <field name="user_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Manufacture Team">
+                           <group>
+                                <field name="alias_id" invisible="1" required="0"/>
+                                <label for="alias_name" attrs="{'invisible': [('alias_domain', '=', False)]}"/>
+                                <div attrs="{'invisible': [('alias_domain', '=', False)]}">
+                                    <field name="alias_name" class="oe_inline" attrs="{'required': [('alias_id', '!=', False)]}"/>@<field name="alias_domain" class="oe_inline"/>
+                                 </div>
+                            </group>
+                            <separator string="Team Members"/>
+                            <field name="member_ids" widget="many2many_kanban">
+                                <kanban quick_create="false" create="true">
+                                    <field name="name"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div style="position: relative">
+                                                <a t-if="! read_only_mode" type="delete" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">X</a>
+                                                <div class="oe_module_vignette">
+                                                    <div class="oe_module_desc">
+                                                        <field name="name"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" help="Follow this salesteam to automatically track the events associated to users of this team."/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

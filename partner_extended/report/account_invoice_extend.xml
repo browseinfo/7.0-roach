@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False" id="report_account_invoice_extend" model="account.invoice" name="sale.order.dipesh"
+                rml="partner_extended/report/account_invoice_extend.rml" string="Account Invoice"
+                usage="default"/>
+    </data>
+</openerp>

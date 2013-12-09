@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ir_sequence_user,ir.sequence,base.model_ir_sequence,base.group_sale_salesman,1,1,1,1
+access_ir_sequence_type_user,ir.sequence.type,base.model_ir_sequence_type,base.group_sale_salesman,1,1,1,1
+access_department_extended_user,department.extended,model_department_extended,base.group_user,1,1,1,0

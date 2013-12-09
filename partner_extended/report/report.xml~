@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False" 
+                id="report_sales_order_dipesh_report" 
+                model="sale.order" 
+                name="sale.order.dipesh1"
+                rml="partner_extended/report/report_rml.rml" 
+                string="Sales Order Catalogue PDF"
+                usage="default" menu="False"/>
+
+    </data>
+</openerp>

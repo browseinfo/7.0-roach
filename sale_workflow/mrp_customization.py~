@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+
+class mrp_customization(osv.osv):
+    _inherit = 'sale.order'
+
+    _columns = {
+    }
+
+    def action_send_to_manu(self, cr, uid, ids, context=None):
+        procurement_obj = self.pool.get('procurement.order') 
+        st = procurement_obj.browse(cr, uid, ids[0], context=context) #browse procurement order obj
+        sale_obj = self.browse(cr,uid,ids[0],context=context) #browse sale order obj
+
+        obj = procurement_obj.search(cr, uid, [('origin', '=', sale_obj.name)]) #search record on procurement order with saleorder name
+        
+        pro_id = procurement_obj.browse(cr, uid, obj, context=context)
+
+        for t in pro_id:
+            if t.state == 'confirmed':
+                return procurement_obj.write(cr, uid, t.id, {'state':'ready'}, context=context) #write state on procurement order
+
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
