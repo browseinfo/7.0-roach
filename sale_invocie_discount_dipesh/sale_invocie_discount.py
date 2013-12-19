@@ -104,8 +104,6 @@ class sale_order(osv.osv):
                     untax_amt = 0.0
                     used_disc = 0.0
                     min_price = 0.0
-                    if disc_methd == 'per':
-                        disc_amt = amount_total * (disc_amt / 100)
                     for order in self.browse(cr, uid, ids, context=context):
                         for line in order.order_line:
                             total_qty += line.product_uom_qty
@@ -120,6 +118,8 @@ class sale_order(osv.osv):
                                     min_price = min((line.price_unit * 90 / 100) , (disc_amt / total_qty))
                                     used_disc += min_price
                                     cr.execute("update sale_order_line set price_unit=%s where id=%s",((line.price_unit-min_price),line.id))
+                            else:
+                                cr.execute("update sale_order_line set price_unit=%s where id=%s",((line.price_unit-(disc_amt / total_qty)),line.id))
                             untax_amt += (line.product_uom_qty * line.price_unit)
                     new_amt = untax_amt -disc_amt
                     cr.execute("update sale_order set amount_untaxed=%s where id=%s",(new_amt, ids[0]))

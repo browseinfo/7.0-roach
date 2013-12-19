@@ -99,6 +99,30 @@ class sale_order(osv.osv):
             if disc_methd =='fix':
                 new_amt = amount_total - disc_amt
                 new_amtt = disc_amt
+                if ver == 'ver2':
+                    new_amtt= 0.0
+                    untax_amt = 0.0
+                    used_disc = 0.0
+                    min_price = 0.0
+                    for order in self.browse(cr, uid, ids, context=context):
+                        for line in order.order_line:
+                            total_qty += line.product_uom_qty
+                        lst =[line.price_unit for line in order.order_line]
+                        maxx = max(lst)
+                        for line in order.order_line:
+                            if (line.price_unit * 10 / 100) < (disc_amt / total_qty):
+                                if line.price_unit == maxx:
+                                    last = disc_amt - used_disc
+                                    cr.execute("update sale_order_line set price_unit=%s where id=%s",((line.price_unit-last),line.id))
+                                else:
+                                    min_price = min((line.price_unit * 90 / 100) , (disc_amt / total_qty))
+                                    used_disc += min_price
+                                    cr.execute("update sale_order_line set price_unit=%s where id=%s",((line.price_unit-min_price),line.id))
+                            else:
+                                cr.execute("update sale_order_line set price_unit=%s where id=%s",((line.price_unit-(disc_amt / total_qty)),line.id))
+                            untax_amt += (line.product_uom_qty * line.price_unit)
+                    new_amt = untax_amt -disc_amt
+                    cr.execute("update sale_order set amount_untaxed=%s where id=%s",(new_amt, ids[0]))
             if disc_methd =='per':
                 new_amtt = amount_total * disc_amt / 100
                 new_amt = amount_total * (1 - (disc_amt or 0.0) / 100.0)

@@ -7,7 +7,8 @@
     'images': [],
     'depends': ['report_aeroo',
                  'sale_stock', 
-                 'base_vat'],
+                 'base_vat',
+                 'mrp',],
     'data': [
         'security/partner_extended_security.xml',
         'security/ir.model.access.csv',
