@@ -83,7 +83,38 @@ class sale_order(osv.osv):
             self.pool.get('ir.sequence').write(cr, uid, [sequence_id], {'prefix': name}, context)
             vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'sale.order') or '/'
          return super(sale_order, self).create(cr, uid, vals, context=context)
-     
+
+    def action_quotation_send(self, cr, uid, ids, context=None):
+        assert len(ids) == 1, 'This option should only be used for a single id at a time.'
+        ir_model_data = self.pool.get('ir.model.data')
+        try:
+            template_id = ir_model_data.get_object_reference(cr, uid, 'sale', 'email_template_edi_sale')[1]
+        except ValueError:
+            template_id = False
+        try:
+            compose_form_id = ir_model_data.get_object_reference(cr, uid, 'mail', 'email_compose_message_wizard_form')[1]
+        except ValueError:
+            compose_form_id = False 
+        ctx = dict(context)
+        ctx.update({
+            'default_model': 'sale.order',
+            'default_res_id': ids[0],
+            'default_use_template': bool(template_id),
+            'default_template_id': template_id,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context': ctx,
+        }
+
 class account_invoice(osv.osv):
     _inherit = "account.invoice"
     _columns = {
@@ -100,6 +131,20 @@ class mail_compose_message(osv.TransientModel):
     
     def default_get(self, cr, uid, fields, context=None):
          res = super(mail_compose_message, self).default_get(cr, uid, fields, context=context)
-         res.update({'template_id': 7})
+         template_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'partner_extended', 'email_template_partner_extended')[1]
+         res.update({'template_id': template_id})
          return res
-    
+
+class procurement_order(osv.osv):
+    _inherit = "procurement.order"
+    _columns = {
+		'shipping_date': fields.date('Shipping Date'),
+		'sale_order_id': fields.many2one('sale.order','Sale Order'),
+        }
+
+class mrp_production(osv.osv):
+    _inherit = "mrp.production"
+    _columns = {
+		'shipping_date': fields.date('Shipping Date'),
+		'sale_order_id': fields.many2one('sale.order','Sale Order'),
+        }

@@ -14,14 +14,14 @@
                             <field name="visible_discount" class="oe_inline"/>
                         </div>
                     </group>
-                    <group style="width: 65%%">
+                    <group style="width: 25%%">
                         <label for="discount_method"/>
                         <div>
                             <field name="discount_method" class="oe_inline"/>
                         </div>
-                        <label for="version"/>
+                        <label for="version" attrs="{'invisible': [('discount_method', '=', 'per')]}"/>
                         <div>
-                        	<field name="version" class="oe_inline"/>
+                        	<field name="version" class="oe_inline" attrs="{'invisible': [('discount_method', '=', 'per')]}"/>
                         </div>                        
                          <label for="discount_amount"/>
                         <div>

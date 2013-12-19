@@ -124,5 +124,31 @@
             </field>
         </record>
 
+		<record id="mrp_production_form_view_partner_extended" model="ir.ui.view">
+            <field name="name">mrp.production.form.partner.extended</field>
+            <field name="model">mrp.production</field>
+			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+				<xpath expr="//field[@name='origin']" position="after">
+					<field name="shipping_date"/>
+					<field name="sale_order_id"/>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="procurement_form_view_partner_extended" model="ir.ui.view">
+            <field name="name">procurement.order.form.partner.extended</field>
+            <field name="model">procurement.order</field>
+			<field name="inherit_id" ref="procurement.procurement_form_view"/>
+            <field name="arch" type="xml">
+				<xpath expr="//field[@name='priority']" position="after">
+					<field name="shipping_date"/>
+				</xpath>
+				<xpath expr="//field[@name='message']" position="after">
+					<field name="sale_order_id"/>
+				</xpath>
+			</field>
+		</record>
+
     </data>
 </openerp>

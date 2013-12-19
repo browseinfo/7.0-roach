@@ -5445,7 +5445,7 @@ o6UhoABmjBpaKADHFAoNAoATByaOaWjmgBMUtHOKKACjFA4NJQAtFFFAH//Z
             <para style="terp_default_9">[[ format(line.name) ]] </para>
           </td>
           <td>
-            <para style="terp_default_Right_9">[[ formatLang(line.price_unit , digits=get_digits(dp='Product Price'))]]</para>
+            <para style="terp_default_Right_9">[[ line.price_unit]]</para>
           </td>
           <td>
             <para style="terp_default_Right_9">[[ formatLang(line.price_subtotal, digits=get_digits(dp='Account'), currency_obj=o.pricelist_id.currency_id) ]] </para>
@@ -5478,7 +5478,7 @@ o6UhoABmjBpaKADHFAoNAoATByaOaWjmgBMUtHOKKACjFA4NJQAtFFFAH//Z
 </para>
         </td>
         <td>
-          <para style="terp_default_Right_9">[[ formatLang(o.discount_amt, dp='Account', currency_obj=o.pricelist_id.currency_id) ]]</para>
+          <para style="terp_default_Right_9">[[((o.visible_discount==False) or removeParentNode('para')) and '']][[ formatLang(o.discount_amt, dp='Account', currency_obj=o.pricelist_id.currency_id) ]]</para>
         </td>
       </tr>
       <tr>

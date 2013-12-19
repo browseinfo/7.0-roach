@@ -109,9 +109,10 @@ class mrp_production(osv.osv):
                 We have got %s Manufacture Order, \n
                 Product is %s and schedual date is %s, \n
                 Bill of Material is %s, \n
+                Shipping Date is %s,\n
                 So we need to start production as much as eariler.
               
-                """ % (manufacture.name, manufacture.product_id.name, manufacture.date_planned, manufacture.bom_id.name)                     
+                """ % (manufacture.name, manufacture.product_id.name, manufacture.date_planned, manufacture.bom_id.name,manufacture.shipping_date)                     
                 if mail_to:
                     vals = {
                             'state': 'outgoing',

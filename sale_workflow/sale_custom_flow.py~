@@ -78,38 +78,6 @@ class sale_order(osv.osv):
             wf_service.trg_validate(uid, 'procurement.order', proc_id, 'button_check', cr)
             return True
 
-    def action_cancel(self, cr, uid, ids, context=None):
-        res = super(sale_order, self).action_cancel(cr, uid, ids, context=context)
-        if context is None:
-            context = {}
-        
-        mail_mail = self.pool.get('mail.mail')
-        mail_to = ""
-        mail_ids = []
-
-        admin_email = self.pool.get('res.users').browse(cr, uid, [1])[0].email
-        for sale in self.browse(cr, uid, ids, context=context):
-            name = sale.name
-            mail_to = sale.partner_id.email
-            if mail_to:
-                sub = '[Cancelled Sale Order]'
-    
-                body = """
-                Hello , \n              
-                We have got your Sale Order %s Cancelled
-                """ % (name)                      
-                if mail_to:
-                    vals = {
-                            'state': 'outgoing',
-                            'subject': sub,
-                            'body_html': body,
-                            'email_to': mail_to,
-                            'email_from': admin_email,
-                        }
-                   
-                mail_ids.append(mail_mail.create(cr, uid, vals))
-                mail_mail.send(cr, uid, mail_ids, auto_commit=True)
-        return res
 
 class mrp_production(osv.osv):
     _inherit = 'mrp.production'
@@ -131,7 +99,7 @@ class mrp_production(osv.osv):
             else:
                 team_mail = ''
                 for teamemail in team:
-                    team_mail = teamemail.email
+                    team_mail += teamemail.email
                 if manufacture.section_id.user_id.email:
                     mail_to = manufacture.section_id.user_id.email + team_mail + ','
                 sub = '[Production Need to be start]'
@@ -141,9 +109,10 @@ class mrp_production(osv.osv):
                 We have got %s Manufacture Order, \n
                 Product is %s and schedual date is %s, \n
                 Bill of Material is %s, \n
+                Shipping Date is %s,\n
                 So we need to start production as much as eariler.
               
-                """ % (manufacture.name, manufacture.product_id.name, manufacture.date_planned, manufacture.bom_id.name)                     
+                """ % (manufacture.name, manufacture.product_id.name, manufacture.date_planned, manufacture.bom_id.name,manufacture.shipping_date)                     
                 if mail_to:
                     vals = {
                             'state': 'outgoing',

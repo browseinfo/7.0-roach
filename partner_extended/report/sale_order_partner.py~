@@ -33,6 +33,7 @@ class sale_order_partner(report_sxw.rml_parse):
         })
 
     def get_formate(self, price_unit):
+        print "GGGGGG________",price_unit
         return int(price_unit)
 
     def _show_discount(self, uid, context=None):
