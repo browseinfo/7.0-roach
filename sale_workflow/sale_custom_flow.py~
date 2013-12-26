@@ -99,7 +99,7 @@ class mrp_production(osv.osv):
             else:
                 team_mail = ''
                 for teamemail in team:
-                    team_mail += teamemail.email
+                   team_mail += teamemail.email
                 if manufacture.section_id.user_id.email:
                     mail_to = manufacture.section_id.user_id.email + team_mail + ','
                 sub = '[Production Need to be start]'
@@ -130,7 +130,9 @@ class mrp_production(osv.osv):
     
     def test_if_product(self, cr, uid, ids):
         res = super(mrp_production, self).test_if_product(cr, uid, ids)
-        res =  self.send_mail_to_member(cr, uid, ids)
+        print "\n\n:::::res",res
+        self.send_mail_to_member(cr, uid, ids)
+        print "\n\n",res
         return res
 
     _columns = {
