@@ -98,6 +98,7 @@
     </initialize>
     <paraStyle name="P10" fontSize="8.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
     <paraStyle name="P11" fontSize="8.0" leading="11" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+	<paraStyle name="P12" fontSize="8.0" leading="11" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
     <paraStyle name="terp_header" fontSize="15.0" leading="19" alignment="LEFT" spaceBefore="12.0" spaceAfter="6.0"/>
     <paraStyle name="terp_default_8" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
     <paraStyle name="terp_default_Bold_9" fontSize="9.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
@@ -268,6 +269,7 @@
 		 	<blockTable colWidths="100.0,158.0,58.0,108.0,158.0" style="Table3">
 				<tr>
 					<td>
+						<para><font color="white">....</font></para>
 						<para style="P10">[[ obj_line.product_id.default_code ]]</para>
 					</td>
 					<td>
