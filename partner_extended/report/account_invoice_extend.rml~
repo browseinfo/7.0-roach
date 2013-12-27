@@ -260,6 +260,9 @@
 				</td>
 			</tr>
 		</blockTable>
+		</td>
+		</tr>
+		</blockTable>
 	 	<section>
 	 		<para>[[repeatIn(o.invoice_line,'obj_line')]]</para>
 		 	<blockTable colWidths="100.0,158.0,58.0,108.0,158.0" style="Table3">
@@ -268,10 +271,10 @@
 						<para style="P10">[[ obj_line.product_id.default_code ]]</para>
 					</td>
 					<td>
-						<para style="P10">[[ obj_line.product_id.description ]]</para>
+						<para style="P10">[[ obj_line.name ]]</para>
 					</td>
 					<td>
-						<para style="P10">[[ obj_line.quantity]]</para>
+						<para style="P10">[[ formatLang(round(obj_line.quantity),0) ]]</para>
 					</td>
 					<td>
 						<para style="P10">[[ obj_line.price_unit ]]</para>
@@ -344,8 +347,8 @@
 		</blockTable>
 		</section>
 
-  		</td>
+  		<!--/td>
 		</tr>
-	</blockTable>
+	</blockTable-->
   </story>
 </document>	

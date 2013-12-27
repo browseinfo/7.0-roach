@@ -5436,7 +5436,7 @@ o6UhoABmjBpaKADHFAoNAoATByaOaWjmgBMUtHOKKACjFA4NJQAtFFFAH//Z
       <blockTable colWidths="56.0,66.0,257.0,77.0,82.0" style="Table5">
         <tr>
           <td>
-            <para style="P6">[[ formatLang(line.product_uos and line.product_uos_qty or line.product_uom_qty) ]] </para>
+            <para style="P6">[[ formatLang(round(line.product_uom_qty),0) ]] </para>
           </td>
           <td>
             <para style="P6">[[ line.product_id and line.product_id.default_code or '' ]]</para>
