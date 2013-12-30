@@ -493,7 +493,7 @@ AP39f+S6Nm180M28AAAAAElFTkSuQmCC
     </para><para style="Standard">
       <font color="white">....... </font>
     </para>
-    <nextPage/>
+    <!--nextPage/>
     <blockTable colWidths="478.0">
       <tr>
         <td>
@@ -521,7 +521,7 @@ AP39f+S6Nm180M28AAAAAElFTkSuQmCC
 		<td><para>............[[ set_index() ]]</para></td>
       </tr>
     </blockTable>
-    </section>
+    </section-->
     <!--blockTable colWidth="560.0">
     	<tr>
     		<td><para><font color="#c0504d" face="Helvetica-Bold">**NOTE</font> Experimental sets with notation “**” are meant to be used with LabQuest2 for more information on LabQuest2 please read page 15.</para></td>
@@ -620,8 +620,8 @@ AP39f+S6Nm180M28AAAAAElFTkSuQmCC
           <para style="P100"></para>
         </td>
         <td>
-        <spacer length="7in" width="" />
-          <para><b>Sayfa no:1</b></para>
+        <!--spacer length="7in" width="" /-->
+          <para><!--b>Sayfa no:1</b--></para>
         </td>
         </tr>
     </blockTable>
@@ -708,8 +708,8 @@ AP39f+S6Nm180M28AAAAAElFTkSuQmCC
           <para style="P100"></para>
         </td>
         <td>
-          <spacer length="5.3in" width="" />
-          <para><b>Sayfa no:[[ cur_page() ]]</b></para>
+          <!--spacer length="5.3in" width="" /-->
+          <para><!--b>Sayfa no:[[ cur_page() ]]</b--></para>
         </td>
         </tr>
     </blockTable>
