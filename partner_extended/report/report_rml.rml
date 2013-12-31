@@ -109,6 +109,7 @@
     <paraStyle name="P8" fontName="Helvetica" fontSize="15.0" leading="19" alignment="LEFT"/>
     <paraStyle name="P9" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
     <paraStyle name="P10" fontName="Helvetica" fontSize="12.0" leading="15" alignment="LEFT" textColor="#000000"/>
+	<paraStyle name="P111" fontName="Helvetica" fontSize="5.0" leading="6" alignment="LEFT" textColor="#000000"/>
     <paraStyle name="P100" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="LEFT" textColor="#000000"/>
     <paraStyle name="P11" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="LEFT" textColor="#000000"/>
     <paraStyle name="P12" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="LEFT" textColor="#000000"/>
@@ -670,7 +671,7 @@ AP39f+S6Nm180M28AAAAAElFTkSuQmCC
           <para><font color="white"> </font></para>
         </td>
         <td>
-          <para style="No Spacing">[[line.product_id.description_sale]]</para>
+          <para style="P111">[[line.product_id.description_sale]]</para>
         </td>
       </tr>
     </blockTable>
