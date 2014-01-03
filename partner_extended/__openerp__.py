@@ -6,6 +6,7 @@
     'website': 'http://www.browseinfo.in',
     'images': [],
     'depends': ['report_aeroo',
+                'report_aeroo_ooo',
                  'sale_stock', 
                  'base_vat',
                  'mrp',],
