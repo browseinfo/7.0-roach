@@ -100,6 +100,7 @@ class mail_compose_message(osv.TransientModel):
     
     def default_get(self, cr, uid, fields, context=None):
          res = super(mail_compose_message, self).default_get(cr, uid, fields, context=context)
-         res.update({'template_id': 7})
+         template_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'partner_extended', 'email_template_partner_extended')[1]
+         res.update({'template_id': template_id})
          return res
     
