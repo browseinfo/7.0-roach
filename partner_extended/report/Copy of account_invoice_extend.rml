@@ -115,32 +115,10 @@
     <images/>
   </stylesheet>
   <story>
-    <pto>
-    <para><font color="white"> </font></para>
-    <para>[[repeatIn(objects,'o')]]</para>
-    <para><font color="white"> </font></para>
-    <para>[[ setLang(o.partner_id.lang) ]]</para>
-	<pto_header>
-		<blockTable colWidths="100.0,158.0,58.0,108.0,158.0" style="Table3">
-			<tr>
-				<td>
-					<para> <font color="white"></font></para>
-				</td>
-				<td>
-					<para>Bir önceki sayfa toplamı</para>
-				</td>
-				<td>
-					<para> <font color="white"></font></para>
-				</td>
-				<td>
-					<para> <font color="white"></font></para>
-				</td>
-				<td>
-					<para> <font color="white"></font></para>
-				</td>
-			</tr>
-		</blockTable>
- 	</pto_header>
+    <condPageBreak height="144"/>
+        
+    
+    
 	<blockTable colWidths="540.0" style="Table3">
       <tr>
       	<td>
@@ -154,23 +132,22 @@
 		  				<blockTable colWidths="80.0,100.0" style="Table3">
 		  				<tr>
 		  					<td><para></para></td>
-		  					<td><para style="P10">name[[o.name]]</para></td>
+		  					<td><para style="P10">[[o.name]]</para></td>
 		  				</tr>
 		  				</blockTable>
 		  				<blockTable colWidths="40.0,100.0" style="Table3">
 		  				<tr>
 		  					<td><para></para></td>
-		  					<td><para style="P10">customer[[o.partner_id.name]]</para></td>
+		  					<td><para style="P10">[[o.partner_id.name]]</para></td>
 		  				</tr>
 		  				</blockTable>
 		  				<blockTable colWidths="1.0,350" style="Table3">
 		  				<tr>
 		  					<td><para><font color="white"> </font></para></td>
-		  					<td><para style="P10">address: [[o.partner_id.street]][[o.partner_id.street2]][[o.partner_id.city]][[o.partner_id.zip]][[o.partner_id.country_id.id]]</para></td>
+		  					<td><para style="P10">[[o.partner_id.street]][[o.partner_id.street2]][[o.partner_id.city]][[o.partner_id.zip]][[o.partner_id.country_id.id]]</para></td>
 		  				</tr>
 		  				</blockTable>
 		  			</td>
-
 		  		</tr>
 		<section>
 		<para></para>
@@ -189,13 +166,13 @@
 		  				<blockTable colWidths="100.0,230.0" style="Table3">
 		  				<tr>
 		  					<td><para> </para></td>
-		  					<td><para style="P10">vat[[ o.partner_id.vat ]]</para></td>
+		  					<td><para style="P10">[[ o.partner_id.vat ]]</para></td>
 		  				</tr>
 		  				<blockTable colWidths="100.0,230.0" style="Table3">
 		  				</blockTable>
 		  				<tr>
 		  					<td><para> </para></td>
-		  					<td><para style="P10">vat_area[[ o.partner_id.vat_area ]]</para></td>
+		  					<td><para style="P10">[[ o.partner_id.vat_area ]]</para></td>
 		  				</tr>
 		  				</blockTable>
 		  			</td>
@@ -210,7 +187,7 @@
 						<para><font color="white"> </font></para>
 					</td>
 					<td>
-						<para style="P10">inv_date[[ formatLang(o.date_invoice, date=True) or '' ]]</para>
+						<para style="P10">[[ formatLang(o.date_invoice, date=True) or '' ]]</para>
 					</td>
 		        </tr>
 		         <tr>
@@ -234,7 +211,7 @@
 						<para><font color="white"> </font></para>
 					</td>
 					<td>
-						<para style="P10">ship_date[[ formatLang(o.shipping_date, date=True) or '' ]]</para>
+						<para style="P10">[[ formatLang(o.shipping_date, date=True) or '' ]]</para>
 					</td>
 		        </tr>
 		        <tr>
@@ -242,7 +219,7 @@
 						<para><font color="white"> </font></para>
 					</td>
 					<td>
-						<para style="P10">acc_date[[ formatLang(o.account_invoice_create,date=True) or '']]</para>
+						<para style="P10">[[ formatLang(o.account_invoice_create,date=True) or '']]</para>
 					</td>
 		        </tr>
 
@@ -288,6 +265,27 @@
 	 		<para>[[repeatIn(o.invoice_line,'obj_line')]]</para>
 		 	<blockTable colWidths="100.0,158.0,58.0,108.0,158.0" style="Table3">
 				<tr>
+                    <td>
+                        <para> <font color="white">[[ get_page_break() and removeParentNode('tr') ]]</font></para>
+                    </td>
+                    <td>
+                        <para>Bir önceki sayfa toplamı</para>
+                    </td>
+                    <td>
+                        <para> <font color="white"></font></para>
+                    </td>
+                    <td>
+                        <para> <font color="white"></font></para>
+                    </td>
+                    <td>
+                        <para> [[ get_page_total() ]] </para>
+                    </td>
+                </tr>
+                <para>
+                [[ get_page_break() and removeParentNode('pageBreak') ]]
+                <pageBreak /> 
+                </para>
+				<tr>
 					<td>
 						<para style="P12">[[ obj_line.product_id.default_code ]]</para>
 					</td>
@@ -301,7 +299,7 @@
 						<para style="P10">[[ obj_line.price_unit ]]</para>
 					</td>
 					<td>
-						<para style="P10">[[ obj_line.price_subtotal ]]</para>
+						<para style="P10">[[ obj_line.price_subtotal ]] [[ set_page_total(obj_line.price_subtotal) ]]</para>
 					</td>
 				</tr>
 			</blockTable>
@@ -371,6 +369,5 @@
   		<!--/td>
 		</tr>
 	</blockTable-->
-  </pto>
   </story>
 </document>	

@@ -1,0 +1,241 @@
+<html>
+<head>
+    <style type="text/css">
+        ${css}
+        .footer {
+            position: absolute;
+            margin-bottom: 120px;
+        }
+    </style>
+    <title>Sale Invoice</title>
+</head>
+<body>
+%for o in objects:
+    <table border="0" width="100%" style="width: 100%; font-size:11;">
+        <tr>
+            <td style="width: 25%; text-align: right;">
+               ${ o.name or ''}
+            </td>
+            <td style="width: 15%; text-align: left;">
+            </td>
+            <td style="width: 15%; text-align: right;"></td>
+            <td style="width: 15%; text-align: right;"></td>
+            <td style="width: 15%; text-align: right;"></td>
+            <td style="width: 15%; text-align: right;">
+            </td>
+        </tr>
+     </table>
+     <br />
+     <table border="0" width="100%" style="width: 100%; font-size:11;">
+        <tr>
+            <td style="width: 25%; text-align: right;">
+                ${ o.partner_id.name }
+            </td>
+            <td style="width: 15%; text-align: left;"></td>
+            <td style="width: 15%; text-align: left;"></td>
+            <td style="width: 15%; text-align: center;"></td>
+            <td style="width: 15%; text-align: center;"></td>
+            <td style="width: 15%; text-align: right;">
+                ${ formatLang(o.date_invoice, date=True) or '' }
+            </td>
+        </tr>
+     </table>
+     <br />
+     <table border="0" width="100%" style="width: 100%; font-size:11;">
+        <tr>
+            <td style="width: 34%; text-align: center;">
+                ${ o.partner_id.street or ''}
+                ${ o.partner_id.street2 or ''}
+                ${ o.partner_id.city or ''}
+                ${ o.partner_id.zip or ''}
+                ${ o.partner_id.country_id.name or ''}
+            </td>
+            <td style="width: 41%; text-align: center;"></td>
+            <td style="width: 25%; text-align: right;">
+                ${ formatLang(o.shipping_date, date=True) or '' }
+            </td>
+        </tr>
+     </table>
+     <br />
+     <br />
+     <br />
+    <table border="0" width="100%" style="width: 100%; font-size:11;">
+        <tr>
+            <td style="width: 25%; text-align: left;">
+            </td>
+            <td style="width: 25%; text-align: left;">
+                ${ o.partner_id.vat or '' }
+            </td>
+            <td style="width: 25%; text-align: left;">
+            </td>
+            <td style="width: 25%; text-align: right;">
+                ${ formatLang(o.account_invoice_create,date=True) or '' }
+            </td>
+        </tr>
+    </table>
+    <br />
+    <table border="0" width="100%" style="width: 100%; font-size:11;">
+        <tr>
+            <td style="width: 25%; text-align: left;">
+            </td>
+            <td style="width: 25%; text-align: left;">
+                ${ o.partner_id.vat_area or ''}
+            </td style="width: 25%; text-align: left;">
+            <td style="width: 25%; text-align: left;"></td>
+            <td style="width: 25%; text-align: left;"></td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    <br />
+    <br />
+    <table border="0" style="table-layout:fixed; margin-top:0; margin-left:0; text-align:left;" width="100%" height=350px>
+    <tr>
+    <td style="vertical-align: top;">
+    <table border="0" style="font-size:11; table-layout:fixed; margin-top:0; margin-left:0; text-align:left;" width="100%">
+    %for obj_line in o.invoice_line:
+        %if get_page_header():
+            %if get_page_break():
+                </td>
+                </tr>
+                </table>
+                </table>
+                <p style="page-break-after:always;"></p>
+                <br />
+                <table border="0" width="100%" style="width: 100%; font-size:11;">
+                    <tr>
+                        <td style="width: 25%; text-align: right;">
+                           ${ o.name or ''}
+                        </td>
+                        <td style="width: 15%; text-align: left;">
+                        </td>
+                        <td style="width: 15%; text-align: right;"></td>
+                        <td style="width: 15%; text-align: right;"></td>
+                        <td style="width: 15%; text-align: right;"></td>
+                        <td style="width: 15%; text-align: right;">
+                        </td>
+                    </tr>
+                 </table>
+                <br />
+                 <table border="0" width="100%" style="width: 100%; font-size:11;">
+                    <tr>
+                        <td style="width: 25%; text-align: right;">
+                            ${ o.partner_id.name }
+                        </td>
+                        <td style="width: 15%; text-align: left;"></td>
+                        <td style="width: 15%; text-align: left;"></td>
+                        <td style="width: 15%; text-align: center;"></td>
+                        <td style="width: 15%; text-align: center;"></td>
+                        <td style="width: 15%; text-align: right;">
+                            ${ formatLang(o.date_invoice, date=True) or '' }
+                        </td>
+                    </tr>
+                 </table>
+                 <br />
+                 <table border="0" width="100%" style="width: 100%; font-size:11;">
+                    <tr>
+                        <td style="width: 34%; text-align: center;">
+                            ${ o.partner_id.street or ''}
+                            ${ o.partner_id.street2 or ''}
+                            ${ o.partner_id.city or ''}
+                            ${ o.partner_id.zip or ''}
+                            ${ o.partner_id.country_id.name or ''}
+                        </td>
+                        <td style="width: 41%; text-align: center;"></td>
+                        <td style="width: 25%; text-align: right;">
+                            ${ formatLang(o.shipping_date, date=True) or '' }
+                        </td>
+                    </tr>
+                 </table>
+                 <br />
+                 <br />
+                 <br />
+                <table border="0" width="100%" style="width: 100%; font-size:11;">
+                    <tr>
+                        <td style="width: 25%; text-align: left;">
+                        </td>
+                        <td style="width: 25%; text-align: left;">
+                            ${ o.partner_id.vat or '' }
+                        </td>
+                        <td style="width: 25%; text-align: left;">
+                        </td>
+                        <td style="width: 25%; text-align: right;">
+                            ${ formatLang(o.account_invoice_create,date=True) or '' }
+                        </td>
+                    </tr>
+                </table>
+                <br />
+                <table border="0" width="100%" style="width: 100%; font-size:11;">
+                    <tr>
+                        <td style="width: 25%; text-align: left;">
+                        </td>
+                        <td style="width: 25%; text-align: left;">
+                            ${ o.partner_id.vat_area or ''}
+                        </td style="width: 25%; text-align: left;">
+                        <td style="width: 25%; text-align: left;"></td>
+                        <td style="width: 25%; text-align: left;"></td>
+                    </tr>
+                </table>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <table border="0" style="width: 100%; font-size:11;">
+                    <tr style="height:10px">
+                        <td style="height:10px; width: 20%;" ></td>
+                        <td style="height:10px; width: 43%; text-align: left;">Bir önceki sayfa toplamı</td>
+                        <td style="height:10px; width: 7%;"></td>
+                        <td style="height:10px; width: 12%;"></td>
+                        <td style="height:10px; width: 17%; height:10px; text-align: right;">${ get_page_total()}</td>
+                    </tr>
+                </table>
+                <table border="0" style="table-layout:fixed; margin-top:0; margin-left:0; text-align:left;" width="100%" height=350px>
+                <tr>
+                <td style="vertical-align: top;">
+                <table border="0" style="font-size:11; table-layout:fixed; margin-top:0; margin-left:0; text-align:left;" width="100%">
+            %endif
+        %endif
+            <tr style="height:10px">
+                <td style="width: 20%; height:10px; text-align: center;">${ obj_line.product_id.default_code or ''}</td>
+                <td style="width: 43%; height:10px; text-align: left;">${ obj_line.name or ''}</td>
+                <td style="width: 7%; height:10px; text-align: left;">${ formatLang(round(obj_line.quantity),0) }</td>
+                <td style="width: 12%; height:10px; text-align: right;">${ obj_line.price_unit }</td>
+                <td style="width: 17%; height:10px; text-align: right;">${ obj_line.price_subtotal}</td>
+            </tr>
+            <para style="visibility : hidden;">${ set_page_total(obj_line.price_subtotal)}</para>
+        
+     
+     %endfor
+     </td>
+     </tr>
+     </table>
+     </table>
+     <br />
+     <br />
+      <table class="footer" border="0" width="100%">
+            <tr>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 35%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 20%; text-align: right;">${ o.amount_untaxed }</td>
+            </tr>
+            <tr>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 35%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 20%; text-align: right;">${ o.amount_tax }</td>
+            </tr>
+            <tr>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 35%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 20%; text-align: right;">${ o.amount_total }</td>
+            </tr>
+      </table>
+%endfor
+</body>
+</html>
