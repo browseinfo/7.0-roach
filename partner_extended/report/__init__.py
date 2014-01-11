@@ -24,5 +24,4 @@ import sale_order_report
 import sale_order_partner
 import report
 import report_aeroo
-import account_invoice_extend_webkit
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
