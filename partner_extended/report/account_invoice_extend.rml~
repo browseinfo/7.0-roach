@@ -302,6 +302,7 @@
 					</td>
 					<td>
 						<para style="P10">[[ obj_line.price_subtotal ]]</para>
+						
 					</td>
 				</tr>
 			</blockTable>

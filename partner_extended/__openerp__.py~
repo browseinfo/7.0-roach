@@ -13,7 +13,6 @@
         'security/partner_extended_security.xml',
         'security/ir.model.access.csv',
         'partner_extended_view.xml',
-        'partner_extended_cron.xml',
         'report/account_invoice_extend.xml',
         'report/aeroo_report.xml',
         'report/aeroo_report_invoice.xml',
