@@ -6,6 +6,7 @@ from openerp import pooler
 from openerp.osv import fields, osv, orm
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, DATETIME_FORMATS_MAP, float_compare
+from dateutil.relativedelta import relativedelta
 
 class res_partner(osv.osv):
     _inherit = "res.partner"
@@ -47,6 +48,57 @@ class sale_order(osv.osv):
         'privacy': 'public',
 	'catalog': 'without',
     }
+
+    def do_run_scheduler_stock(self, cr, uid, automatic=False, use_new_cursor=False, context=None):
+        """Scheduler for Task reminder
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user's ID for security checks,
+        @param ids: List of calendar alarm's IDs.
+        @param use_new_cursor: False or the dbname
+        @param context: A standard dictionary for contextual values
+        """
+        if context is None:
+            context = {}
+        mail_mail = self.pool.get('mail.mail')
+        product_obj = self.pool.get('product.product')
+        line_ids = []
+        mail_to = ""
+        mail_ids = []   
+        
+        today = time.strftime('%Y-%m-%d')
+        next_5th_date = datetime.strptime(today, '%Y-%m-%d') + relativedelta(days=5)
+        next_date =  next_5th_date.strftime('%Y-%m-%d')
+
+        admin_email = self.pool.get('res.users').browse(cr, uid, [1])[0].email
+        
+        #order_ids = self.search(cr, uid, [('state', 'not in', ('draft','sent', 'done'))], context=context)
+        product_ids = product_obj.search(cr, uid, [], context=context)
+        for product in product_obj.browse(cr, uid, product_ids, context=context):
+            product_virtual = product.virtual_available
+            product_avail = product.qty_available
+            mail_to = admin_email
+            if today < next_date:
+                if admin_email:
+                    sub = '[Stock Of the Product]'
+
+                    body = """
+                    Hello ,
+                   
+                    Just a friendly reminder you , The Product %s's, Quantity Availlable %s, and Quantity On Hand %s""" % (product.name,product_virtual,product_avail)
+                    
+                    if mail_to:
+                        vals = {
+                                'state': 'outgoing',
+                                'subject': sub,
+                                'body_html': body,
+                                'email_to': mail_to,
+                                'email_from': admin_email,
+                            }
+                       
+                        mail_ids.append(mail_mail.create(cr, uid, vals, context=context))
+                        mail_mail.send(cr, uid, mail_ids, auto_commit=True, context=context)
+        return True
 
     def print_catalogue(self, cr, uid, ids, context=None):
         datas = {

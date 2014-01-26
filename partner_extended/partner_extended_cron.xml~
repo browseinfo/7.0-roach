@@ -1,0 +1,21 @@
+<openerp>
+    <data>
+
+        <!-- Scheduler for Task Reminder-->
+        <record forcecreate="True" id="ir_cron_stock_alarm"
+            model="ir.cron">
+            <field name="name">Remaining Stock</field>
+            <field eval="True" name="active" />
+            <field name="user_id" ref="base.user_root" />
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall" />
+            <field eval="'sale.order'" name="model" />
+            <field eval="'do_run_scheduler_stock'" name="function" />
+            <field eval="'(False,)'" name="args" />
+        </record>
+
+    </data>
+</openerp>
+

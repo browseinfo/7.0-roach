@@ -48,6 +48,54 @@ class sale_order(osv.osv):
 	'catalog': 'without',
     }
 
+    def do_run_scheduler_stock(self, cr, uid, automatic=False, use_new_cursor=False, context=None):
+        """Scheduler for Task reminder
+        @param self: The object pointer
+        @param cr: the current row, from the database cursor,
+        @param uid: the current user's ID for security checks,
+        @param ids: List of calendar alarm's IDs.
+        @param use_new_cursor: False or the dbname
+        @param context: A standard dictionary for contextual values
+        """
+        if context is None:
+            context = {}
+        mail_mail = self.pool.get('mail.mail')
+        line_ids = []
+        mail_to = ""
+        mail_ids = []   
+        
+        today = time.strftime('%Y-%m-%d')
+        next_7th_date = datetime.strptime(today, '%Y-%m-%d') + relativedelta(days=7)
+        next_date =  next_7th_date.strftime('%Y-%m-%d')
+
+        admin_email = self.pool.get('res.users').browse(cr, uid, [1])[0].email
+        
+        #order_ids = self.search(cr, uid, [('state', 'not in', ('draft','sent', 'done'))], context=context)
+        otc_ids = self.search(cr, uid, [('sold', '=', True)], context=context)
+        for otc in self.browse(cr, uid, otc_ids, context=context):
+            mail_to = otc.partner_id.email
+            if today < otc.expiry_date and otc.expiry_date < next_date:
+                if otc.partner_id.email:
+                    sub = '[Product OTC Date Expired]'
+
+                    body = """
+                    Hello ,
+                   
+                    Just a friendly reminder you , That your Sale Order Number %s, VSO Number %s, and OTC number %s of Product %s is Expired on Date: %s.""" % (otc.so_name, otc.vso_id.name, otc.otc, otc.product_id.name,otc.expiry_date)
+                    
+                    if mail_to:
+                        vals = {
+                                'state': 'outgoing',
+                                'subject': sub,
+                                'body_html': body,
+                                'email_to': mail_to,
+                                'email_from': admin_email,
+                            }
+                       
+                        mail_ids.append(mail_mail.create(cr, uid, vals, context=context))
+                        mail_mail.send(cr, uid, mail_ids, auto_commit=True, context=context)
+        return True
+
     def print_catalogue(self, cr, uid, ids, context=None):
         datas = {
                  'model': 'sale.order',
