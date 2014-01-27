@@ -193,7 +193,7 @@ class sale_order(osv.osv):
             'target': 'new',
             'context': ctx,
         }
-    def print_quotation(self, cr, uid, ids, context=None):
+    def print_quotation_report(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         data = self.read(cr, uid, ids)[0]
