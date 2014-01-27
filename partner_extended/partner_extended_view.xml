@@ -89,7 +89,6 @@
                 <xpath expr="/form/header/button[@name='invoice_open']" position="before">
                 	<button name="account_invoice" string="Account Invoice" type="object"/>
                 </xpath>
-
                 <xpath expr="//field[@name='date_invoice']" position="after">
                     <field name="shipping_date"/>
                     <field name="account_invoice_create"/>
