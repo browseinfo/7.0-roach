@@ -86,11 +86,9 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
-		<header>
-                <xpath expr="/form/header/button[@name='invoice_print']" position="before">
+                <xpath expr="/form/header/button[@name='invoice_open']" position="before">
                 	<button name="account_invoice" string="Account Invoice" type="object"/>
                 </xpath>
-		</header>
 
                 <xpath expr="//field[@name='date_invoice']" position="after">
                     <field name="shipping_date"/>
