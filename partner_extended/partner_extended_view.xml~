@@ -66,6 +66,12 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+		<header>
+                <xpath expr="//button[@name='print_quotation']" position="after">
+                	<button name="print_quotation" string="Print Quotation" type="object"/>
+                </xpath>
+		</header>
+
                 <xpath expr="//field[@name='pricelist_id']" position="after">
                     <field name="privacy" groups="base.group_sale_manager"/>
                     <field name="catalog" />
@@ -81,6 +87,12 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
+		<header>
+                <xpath expr="//button[@name='invoice_print']" position="after">
+                	<button name="account_invoice" string="Account Invoice" type="object"/>
+                </xpath>
+		</header>
+
                 <xpath expr="//field[@name='date_invoice']" position="after">
                     <field name="shipping_date"/>
                     <field name="account_invoice_create"/>

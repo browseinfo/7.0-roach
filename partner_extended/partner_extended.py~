@@ -6,7 +6,7 @@ from openerp import pooler
 from openerp.osv import fields, osv, orm
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, DATETIME_FORMATS_MAP, float_compare
-
+from dateutil.relativedelta import relativedelta
 class res_partner(osv.osv):
     _inherit = "res.partner"
     _columns = {
@@ -60,40 +60,70 @@ class sale_order(osv.osv):
         if context is None:
             context = {}
         mail_mail = self.pool.get('mail.mail')
+        product_obj = self.pool.get('product.product')
+        move_obj = self.pool.get('stock.move')
+        warehouse_obj = self.pool.get('stock.warehouse')
+        product_uom_obj = self.pool.get('product.uom')
         line_ids = []
         mail_to = ""
-        mail_ids = []   
-        
-        today = time.strftime('%Y-%m-%d')
-        next_7th_date = datetime.strptime(today, '%Y-%m-%d') + relativedelta(days=7)
-        next_date =  next_7th_date.strftime('%Y-%m-%d')
-
+        mail_ids = []  
+         
         admin_email = self.pool.get('res.users').browse(cr, uid, [1])[0].email
         
-        #order_ids = self.search(cr, uid, [('state', 'not in', ('draft','sent', 'done'))], context=context)
-        otc_ids = self.search(cr, uid, [('sold', '=', True)], context=context)
-        for otc in self.browse(cr, uid, otc_ids, context=context):
-            mail_to = otc.partner_id.email
-            if today < otc.expiry_date and otc.expiry_date < next_date:
-                if otc.partner_id.email:
-                    sub = '[Product OTC Date Expired]'
+        today = time.strftime('%Y-%m-%d')
 
-                    body = """
-                    Hello ,
-                   
-                    Just a friendly reminder you , That your Sale Order Number %s, VSO Number %s, and OTC number %s of Product %s is Expired on Date: %s.""" % (otc.so_name, otc.vso_id.name, otc.otc, otc.product_id.name,otc.expiry_date)
+        
+        last_5th_date = datetime.strptime(today, '%Y-%m-%d') - relativedelta(days=5)
+        last_date =  last_5th_date.strftime('%Y-%m-%d')
+
+        incoming_qty = 0.0
+        warehouse_ids = warehouse_obj.search(cr, uid, [], context=context)        
+        for loc in warehouse_obj.browse(cr, uid, warehouse_ids, context=context):
+            stock_location = loc.lot_stock_id.id   
+            incoming_ids = move_obj.search(cr, uid, [('location_id','in', [stock_location]),('state', '=', 'done')]) 
+            if incoming_ids:
+                real = 0.0
+                incoming_qty = ''
+                for move in move_obj.browse(cr, uid, incoming_ids):
+                    real += move.product_id.qty_available
+                    incoming_qty += move.product_id.name + ',' + str(move.product_qty) + '\n'
+                    date = move.date
+        if last_date < date:
+            
+
+            product_ids = product_obj.search(cr, uid, [], context=context)
+            if product_ids:
+                display = ''
+                for product in product_obj.browse(cr, uid, product_ids, context=context):
+                    display += product.name + ',' + str(product.qty_available) + '\n'
+                    mail_to = admin_email
+            if admin_email:
+                sub = '[Stock Of the Product]'
+            
+                body = """
+                Hello ,
+                
+                Please see the current stock of today which is as follow,  
+                \n %s'
+                
+                
+                And we have delivered the following product on last 5 days
+                
+                
+                \n %s""" % (display,incoming_qty)
+    
+    
+                if mail_to:
+                    vals = {
+                            'state': 'outgoing',
+                            'subject': sub,
+                            'body_html': body,
+                            'email_to': mail_to,
+                            'email_from': admin_email,
+                        }
                     
-                    if mail_to:
-                        vals = {
-                                'state': 'outgoing',
-                                'subject': sub,
-                                'body_html': body,
-                                'email_to': mail_to,
-                                'email_from': admin_email,
-                            }
-                       
-                        mail_ids.append(mail_mail.create(cr, uid, vals, context=context))
-                        mail_mail.send(cr, uid, mail_ids, auto_commit=True, context=context)
+                    mail_ids.append(mail_mail.create(cr, uid, vals, context=context))
+                    mail_mail.send(cr, uid, mail_ids, auto_commit=True, context=context)
         return True
 
     def print_catalogue(self, cr, uid, ids, context=None):
@@ -124,8 +154,9 @@ class sale_order(osv.osv):
     
     def create(self, cr, uid, vals, context=None):
          if vals.get('name','/')=='/':
-            name = self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].name
-            last_name = self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].last_name or ""
+            name = self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].name[:1]
+	 if vals.get('last_name','/')=='/':
+	    last_name = self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].last_name and self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].last_name[:2] or ""
             dummy, sequence_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'sale', 'seq_sale_order')
             name = datetime.now().strftime('%Y')+name+last_name
             self.pool.get('ir.sequence').write(cr, uid, [sequence_id], {'prefix': name}, context)
@@ -162,7 +193,20 @@ class sale_order(osv.osv):
             'target': 'new',
             'context': ctx,
         }
-
+    def print_quotation(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        data = self.read(cr, uid, ids)[0]
+        datas = {
+             'ids': ids,
+             'model': 'sale.order',
+             'form': data
+                 }
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'sale.order.partner',
+            'datas': datas,
+            }
 class account_invoice(osv.osv):
     _inherit = "account.invoice"
     _columns = {
@@ -174,6 +218,20 @@ class account_invoice(osv.osv):
         'account_invoice_create': lambda *a: time.strftime('%Y-%m-%d')
     }
 
+    def account_invoice(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        data = self.read(cr, uid, ids)[0]
+        datas = {
+             'ids': ids,
+             'model': 'account.invoice',
+             'form': data
+                 }
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'account.invoice.webkit',
+            'datas': datas,
+            }
 class mail_compose_message(osv.TransientModel):
     _inherit = "mail.compose.message"
     

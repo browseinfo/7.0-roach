@@ -3,7 +3,19 @@
     <data>
 
         <report auto="False" id="report_account_invoice_extend" model="account.invoice" name="sale.order.dipesh"
-                rml="partner_extended/report/account_invoice_extend.rml" string="Account Invoice1"
+                rml="partner_extended/report/account_invoice_extend.rml" string="Account Invoice"
                 usage="default"/>
+        
+		<report auto="False" 
+		id="report_account_invoice_extend_webkit" 
+		model="account.invoice" 
+		name="account.invoice.webkit"
+		file="partner_extended/report/account_invoice_extend_webkit_tmpl.mako" 
+		string="Account Invoice (Webkit)"
+		usage="default"
+		report_type="webkit"
+		header="False" 
+		webkit_header="partner_extended.header_pre_print_report"
+		menu="False"/>
     </data>
 </openerp>

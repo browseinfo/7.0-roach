@@ -15,6 +15,7 @@
 		usage="default"
 		report_type="webkit"
 		header="False" 
-		webkit_header="partner_extended.header_pre_print_report"/>
+		webkit_header="partner_extended.header_pre_print_report"
+		menu="False"/>
     </data>
 </openerp>

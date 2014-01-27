@@ -7,7 +7,6 @@ from openerp.osv import fields, osv, orm
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, DATETIME_FORMATS_MAP, float_compare
 from dateutil.relativedelta import relativedelta
-
 class res_partner(osv.osv):
     _inherit = "res.partner"
     _columns = {
@@ -155,8 +154,9 @@ class sale_order(osv.osv):
     
     def create(self, cr, uid, vals, context=None):
          if vals.get('name','/')=='/':
-            name = self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].name
-            last_name = self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].last_name or ""
+            name = self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].name[:1]
+	 if vals.get('last_name','/')=='/':
+	    last_name = self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].last_name and self.pool.get('res.users').browse(cr, uid, [vals['user_id']], context)[0].last_name[:2] or ""
             dummy, sequence_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'sale', 'seq_sale_order')
             name = datetime.now().strftime('%Y')+name+last_name
             self.pool.get('ir.sequence').write(cr, uid, [sequence_id], {'prefix': name}, context)
@@ -193,7 +193,20 @@ class sale_order(osv.osv):
             'target': 'new',
             'context': ctx,
         }
-
+    def print_quotation(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        data = self.read(cr, uid, ids)[0]
+        datas = {
+             'ids': ids,
+             'model': 'sale.order',
+             'form': data
+                 }
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'sale.order.partner',
+            'datas': datas,
+            }
 class account_invoice(osv.osv):
     _inherit = "account.invoice"
     _columns = {
@@ -205,6 +218,20 @@ class account_invoice(osv.osv):
         'account_invoice_create': lambda *a: time.strftime('%Y-%m-%d')
     }
 
+    def account_invoice(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        data = self.read(cr, uid, ids)[0]
+        datas = {
+             'ids': ids,
+             'model': 'account.invoice',
+             'form': data
+                 }
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'account.invoice.webkit',
+            'datas': datas,
+            }
 class mail_compose_message(osv.TransientModel):
     _inherit = "mail.compose.message"
     
