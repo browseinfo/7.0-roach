@@ -62,42 +62,69 @@ class sale_order(osv.osv):
             context = {}
         mail_mail = self.pool.get('mail.mail')
         product_obj = self.pool.get('product.product')
+        move_obj = self.pool.get('stock.move')
+        warehouse_obj = self.pool.get('stock.warehouse')
+        product_uom_obj = self.pool.get('product.uom')
         line_ids = []
         mail_to = ""
-        mail_ids = []   
-        
-        today = time.strftime('%Y-%m-%d')
-        next_5th_date = datetime.strptime(today, '%Y-%m-%d') + relativedelta(days=5)
-        next_date =  next_5th_date.strftime('%Y-%m-%d')
-
+        mail_ids = []  
+         
         admin_email = self.pool.get('res.users').browse(cr, uid, [1])[0].email
         
-        #order_ids = self.search(cr, uid, [('state', 'not in', ('draft','sent', 'done'))], context=context)
-        product_ids = product_obj.search(cr, uid, [], context=context)
-        for product in product_obj.browse(cr, uid, product_ids, context=context):
-            product_virtual = product.virtual_available
-            product_avail = product.qty_available
-            mail_to = admin_email
-            if today < next_date:
-                if admin_email:
-                    sub = '[Stock Of the Product]'
+        today = time.strftime('%Y-%m-%d')
 
-                    body = """
-                    Hello ,
-                   
-                    Just a friendly reminder you , The Product %s's, Quantity Availlable %s, and Quantity On Hand %s""" % (product.name,product_virtual,product_avail)
+        
+        last_5th_date = datetime.strptime(today, '%Y-%m-%d') - relativedelta(days=5)
+        last_date =  last_5th_date.strftime('%Y-%m-%d')
+
+        incoming_qty = 0.0
+        warehouse_ids = warehouse_obj.search(cr, uid, [], context=context)        
+        for loc in warehouse_obj.browse(cr, uid, warehouse_ids, context=context):
+            stock_location = loc.lot_stock_id.id   
+            incoming_ids = move_obj.search(cr, uid, [('location_id','in', [stock_location]),('state', '=', 'done')]) 
+            if incoming_ids:
+                real = 0.0
+                incoming_qty = ''
+                for move in move_obj.browse(cr, uid, incoming_ids):
+                    real += move.product_id.qty_available
+                    incoming_qty += move.product_id.name + ',' + str(move.product_qty) + '\n'
+                    date = move.date
+        if last_date < date:
+            
+
+            product_ids = product_obj.search(cr, uid, [], context=context)
+            if product_ids:
+                display = ''
+                for product in product_obj.browse(cr, uid, product_ids, context=context):
+                    display += product.name + ',' + str(product.qty_available) + '\n'
+                    mail_to = admin_email
+            if admin_email:
+                sub = '[Stock Of the Product]'
+            
+                body = """
+                Hello ,
+                
+                Please see the current stock of today which is as follow,  
+                \n %s'
+                
+                
+                And we have delivered the following product on last 5 days
+                
+                
+                \n %s""" % (display,incoming_qty)
+    
+    
+                if mail_to:
+                    vals = {
+                            'state': 'outgoing',
+                            'subject': sub,
+                            'body_html': body,
+                            'email_to': mail_to,
+                            'email_from': admin_email,
+                        }
                     
-                    if mail_to:
-                        vals = {
-                                'state': 'outgoing',
-                                'subject': sub,
-                                'body_html': body,
-                                'email_to': mail_to,
-                                'email_from': admin_email,
-                            }
-                       
-                        mail_ids.append(mail_mail.create(cr, uid, vals, context=context))
-                        mail_mail.send(cr, uid, mail_ids, auto_commit=True, context=context)
+                    mail_ids.append(mail_mail.create(cr, uid, vals, context=context))
+                    mail_mail.send(cr, uid, mail_ids, auto_commit=True, context=context)
         return True
 
     def print_catalogue(self, cr, uid, ids, context=None):
