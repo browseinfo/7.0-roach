@@ -32,7 +32,6 @@ class account_webkit(report_sxw.rml_parse):
     
     def get_page_total(self):
         return str(self.page_total)
-
     def get_partner_name(self, partner_id):
         if partner_id.is_company:
             return partner_id.name
