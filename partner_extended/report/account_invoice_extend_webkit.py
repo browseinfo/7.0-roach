@@ -11,7 +11,8 @@ class account_webkit(report_sxw.rml_parse):
             'set_page_total' : self.set_page_total,
             'get_page_total' : self.get_page_total,
             'get_page_header' : self.get_page_header,
-            'get_partner_name': self.get_partner_name
+            'get_partner_name': self.get_partner_name,
+            'get_vat': self.get_vat
         })
         
     def get_page_header(self):
@@ -38,6 +39,11 @@ class account_webkit(report_sxw.rml_parse):
             return partner_id.name
         else:
             return partner_id.parent_id.name
+    def get_vat(self, vat):
+        length = len(vat)
+        vat = vat[2:length]
+        print "\n\n**",vat
+        return vat
     
 report_sxw.report_sxw('report.account.invoice.webkit', 'account.invoice', '7.0-roach/partner_extended/report/account_invoice_extend_webkit_tmpl.mako', parser=account_webkit, header=False)
 

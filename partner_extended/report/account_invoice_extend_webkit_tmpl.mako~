@@ -64,7 +64,7 @@
             <td style="width: 25%; text-align: left;">
             </td>
             <td style="width: 25%; text-align: left;">
-                ${ o.partner_id.vat or '' }
+                ${ get_vat(o.partner_id.vat) or '' }
             </td>
             <td style="width: 25%; text-align: left;">
             </td>
@@ -155,7 +155,7 @@
                         <td style="width: 25%; text-align: left;">
                         </td>
                         <td style="width: 25%; text-align: left;">
-                            ${ o.partner_id.vat or '' }
+                            ${ get_vat(o.partner_id.vat) or '' }
                         </td>
                         <td style="width: 25%; text-align: left;">
                         </td>
