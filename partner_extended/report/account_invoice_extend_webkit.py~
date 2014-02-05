@@ -40,9 +40,11 @@ class account_webkit(report_sxw.rml_parse):
         else:
             return partner_id.parent_id.name
     def get_vat(self, vat):
-        length = len(vat)
-        vat = vat[2:length]
-        print "\n\n**",vat
+        if not vat:
+            vat = ''
+        else:
+            length = len(vat)
+            vat = vat[2:length]
         return vat
     
 report_sxw.report_sxw('report.account.invoice.webkit', 'account.invoice', '7.0-roach/partner_extended/report/account_invoice_extend_webkit_tmpl.mako', parser=account_webkit, header=False)
