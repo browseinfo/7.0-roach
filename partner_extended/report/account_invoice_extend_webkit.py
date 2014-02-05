@@ -1,5 +1,6 @@
 import time
 from openerp.report import report_sxw
+from tools import ustr
 class account_webkit(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context=None):
         super(account_webkit, self).__init__(cr, uid, name, context=context)
@@ -36,9 +37,9 @@ class account_webkit(report_sxw.rml_parse):
 
     def get_partner_name(self, partner_id):
         if partner_id.is_company:
-            return partner_id.name
+            return ustr(partner_id.name)
         else:
-            return partner_id.parent_id.name
+            return ustr(partner_id.parent_id.name)
     def get_vat(self, vat):
         if not vat:
             vat = ''
