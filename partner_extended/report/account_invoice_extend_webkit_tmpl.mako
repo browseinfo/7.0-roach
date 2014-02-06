@@ -101,8 +101,8 @@
                 </table>
                 </table>
                 <p style="page-break-after:always;"></p>
-                <br />
-                <table border="0" width="100%" style="width: 100%; font-size:11;">
+                <!--br /-->
+                <table border="0" width="100%" style="width: 100%; font-size:11; margin-top:-4px;">
                     <tr>
                         <td style="width: 25%; text-align: right;">
                            ${ o.name or ''}
