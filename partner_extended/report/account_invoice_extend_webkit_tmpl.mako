@@ -58,8 +58,6 @@
         </tr>
      </table>
      <br />
-     <br />
-     <br />
     <table border="0" width="100%" style="width: 100%; font-size:15;">
         <tr>
             <td style="width: 25%; text-align: left;">
@@ -148,9 +146,6 @@
                         </td>
                     </tr>
                  </table>
-                 <br />
-                 <br />
-                 <br />
                 <table border="0" width="100%" style="width: 100%; font-size:15;">
                     <tr>
                         <td style="width: 25%; text-align: left;">
@@ -161,7 +156,6 @@
                         <td style="width: 25%; text-align: left;">
                         </td>
                         <td style="width: 25%; text-align: right;">
-                            ${ formatLang(o.account_invoice_create,date=True) or '' }
                         </td>
                     </tr>
                 </table>
@@ -174,11 +168,11 @@
                             ${ o.partner_id.vat_area or ''}
                         </td style="width: 25%; text-align: left;">
                         <td style="width: 25%; text-align: left;"></td>
-                        <td style="width: 25%; text-align: left;"></td>
+                        <td style="width: 25%; text-align: right;">
+                            ${ formatLang(o.account_invoice_create,date=True) or '' }
+                        </td>
                     </tr>
                 </table>
-                <br />
-                <br />
                 <br />
                 <br />
                 <br />
@@ -196,10 +190,10 @@
                 <td style="vertical-align: top;">
                 <table border="0" style="font-size:11; table-layout:fixed; margin-top:0; margin-left:0; text-align:left;" width="100%">
             %endif
-        %endif
+        %endif 
             <tr style="height:10px" font-size:15;>
-                <td style="width: 20%; height:15px; text-align: center;font-size:15">${ obj_line.product_id.default_code or ''}</td>
-                <td style="width: 43%; height:15px; text-align: left;font-size:15;">${ obj_line.name or ''}</td>
+                <td style="width: 10%; height:12px; text-align: left;font-size:15">${ obj_line.product_id.default_code or ''}</td>
+                <td style="width: 53%; height:12px; text-align: left;font-size:15;">${ obj_line.name or ''}</td>
                 <td style="width: 7%; height:15px; text-align: left;font-size:15">${ formatLang(round(obj_line.quantity),0) }</td>
                 <td style="width: 12%; height:15px; text-align: right;font-size:15">${ obj_line.price_unit }</td>
                 <td style="width: 17%; height:15px; text-align: right;font-size:15">${ obj_line.price_subtotal}</td>
@@ -214,7 +208,15 @@
      </table>
      <br />
      <br />
+     <br />
       <table class="footer" border="0" width="100%">
+            <tr>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 35%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;"></td>
+            </tr>
             <tr>
                 <td style="width: 15%; text-align: right;"></td>
                 <td style="width: 15%; text-align: right;"></td>
