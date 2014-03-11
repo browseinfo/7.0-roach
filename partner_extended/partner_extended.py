@@ -49,6 +49,7 @@ class sale_order(osv.osv):
     }
 
     def do_run_scheduler_stock(self, cr, uid, automatic=False, use_new_cursor=False, context=None):
+        print "\n\n*****schedular called",
         """Scheduler for Task reminder
         @param self: The object pointer
         @param cr: the current row, from the database cursor,
@@ -67,9 +68,9 @@ class sale_order(osv.osv):
         line_ids = []
         mail_to = ""
         mail_ids = []  
-         
+        date = ""
         admin_email = self.pool.get('res.users').browse(cr, uid, [1])[0].email
-        
+        print "\n\n***",admin_email
         today = time.strftime('%Y-%m-%d')
 
         
@@ -80,7 +81,8 @@ class sale_order(osv.osv):
         warehouse_ids = warehouse_obj.search(cr, uid, [], context=context)        
         for loc in warehouse_obj.browse(cr, uid, warehouse_ids, context=context):
             stock_location = loc.lot_stock_id.id   
-            incoming_ids = move_obj.search(cr, uid, [('location_id','in', [stock_location]),('state', '=', 'done')]) 
+            incoming_ids = move_obj.search(cr, uid, [('location_id','in', [stock_location]),('state', '=', 'done')])
+            print "incoming ids",incoming_ids
             if incoming_ids:
                 real = 0.0
                 incoming_qty = ''
@@ -88,6 +90,7 @@ class sale_order(osv.osv):
                     real += move.product_id.qty_available
                     incoming_qty += move.product_id.name + ',' + str(move.product_qty) + '\n'
                     date = move.date
+        print "las_date=",last_date,"date=",date
         if last_date < date:
             
 
@@ -111,8 +114,31 @@ class sale_order(osv.osv):
                 
                 
                 \n %s""" % (display,incoming_qty)
-    
-    
+				# following code is for creating xls file for the prodct name and stock
+				#@@@@@@@@@@@@@@@@@
+                import xlwt
+
+                font0 = xlwt.Font()
+                font0.name = 'Times New Roman'
+                font0.colour_index = 2
+                font0.bold = True
+
+                style0 = xlwt.XFStyle()
+                style0.font = font0
+
+                style1 = xlwt.XFStyle()
+                style1.num_format_str = 'D-MMM-YY'
+
+                wb = xlwt.Workbook()
+                ws = wb.add_sheet('Prodct Qty Info')
+
+                ws.write(0, 0, 'Product', style0)
+                ws.write(0, 1, 'Qty', style0)
+                ws.write(1, 0, display)
+                ws.write(1, 1, incoming_qty)
+                print "\n\n*****",incoming_qty
+                wb.save('Product_stock_info.xls')
+    			#@@@@@@@@@@@@@@@@@
                 if mail_to:
                     vals = {
                             'state': 'outgoing',
@@ -120,6 +146,7 @@ class sale_order(osv.osv):
                             'body_html': body,
                             'email_to': mail_to,
                             'email_from': admin_email,
+							'datas_fname':Product_stock_info.xls,
                         }
                     
                     mail_ids.append(mail_mail.create(cr, uid, vals, context=context))

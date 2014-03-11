@@ -57,13 +57,23 @@
             </td>
         </tr>
      </table>
+     <table border="0" width="100%" style="width: 100%; font-size:15;">
+        <tr>
+            <td style="width: 34%; text-align: center;">
+            </td>
+            <td style="width: 41%; text-align: center;"></td>
+            <td style="width: 25%; text-align: right;">
+                ${ o.origin or '' }
+            </td>
+        </tr>
+     </table>
      <br />
     <table border="0" width="100%" style="width: 100%; font-size:15;">
         <tr>
             <td style="width: 25%; text-align: left;">
             </td>
             <td style="width: 25%; text-align: left;">
-                ${ get_vat(o.partner_id.vat) or '' }
+                ${ o.partner_id.vat_area or ''}
             </td>
             <td style="width: 25%; text-align: left;">
             </td>
@@ -78,7 +88,7 @@
             <td style="width: 25%; text-align: left;">
             </td>
             <td style="width: 25%; text-align: left;">
-                ${ o.partner_id.vat_area or ''}
+                ${ get_vat(o.partner_id.vat) or '' }
             </td style="width: 25%; text-align: left;">
             <td style="width: 25%; text-align: left;"></td>
             <td style="width: 25%; text-align: left;"></td>
@@ -146,12 +156,22 @@
                         </td>
                     </tr>
                  </table>
+                 <table border="0" width="100%" style="width: 100%; font-size:15;">
+                    <tr>
+                        <td style="width: 34%; text-align: center;">
+                        </td>
+                        <td style="width: 41%; text-align: center;"></td>
+                        <td style="width: 25%; text-align: right;">
+                            ${ o.origin or '' }
+                        </td>
+                    </tr>
+                 </table>
                 <table border="0" width="100%" style="width: 100%; font-size:15;">
                     <tr>
                         <td style="width: 25%; text-align: left;">
                         </td>
                         <td style="width: 25%; text-align: left;">
-                            ${ get_vat(o.partner_id.vat) or '' }
+                            ${ o.partner_id.vat_area or ''}
                         </td>
                         <td style="width: 25%; text-align: left;">
                         </td>
@@ -165,7 +185,7 @@
                         <td style="width: 25%; text-align: left;">
                         </td>
                         <td style="width: 25%; text-align: left;">
-                            ${ o.partner_id.vat_area or ''}
+                            ${ get_vat(o.partner_id.vat) or '' }
                         </td style="width: 25%; text-align: left;">
                         <td style="width: 25%; text-align: left;"></td>
                         <td style="width: 25%; text-align: right;">
@@ -193,7 +213,7 @@
         %endif 
             <tr style="height:10px" font-size:15;>
                 <td style="width: 10%; height:12px; text-align: left;font-size:15">${ obj_line.product_id.default_code or ''}</td>
-                <td style="width: 53%; height:12px; text-align: left;font-size:15;">${ obj_line.name or ''}</td>
+                <td style="width: 53%; height:12px; text-align: left;font-size:15;">${ obj_line.product_id.name or ''}</td>
                 <td style="width: 7%; height:15px; text-align: left;font-size:15">${ formatLang(round(obj_line.quantity),0) }</td>
                 <td style="width: 12%; height:15px; text-align: right;font-size:15">${ obj_line.price_unit }</td>
                 <td style="width: 17%; height:15px; text-align: right;font-size:15">${ obj_line.price_subtotal}</td>
