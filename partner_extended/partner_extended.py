@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 import time
+import base64
+from xml.etree import ElementTree
 import openerp.exceptions
 from openerp import netsvc
 from openerp import pooler
@@ -61,6 +63,7 @@ class sale_order(osv.osv):
         if context is None:
             context = {}
         mail_mail = self.pool.get('mail.mail')
+        attach_obj = self.pool.get('ir.attachment')
         product_obj = self.pool.get('product.product')
         move_obj = self.pool.get('stock.move')
         warehouse_obj = self.pool.get('stock.warehouse')
@@ -118,26 +121,17 @@ class sale_order(osv.osv):
 				#@@@@@@@@@@@@@@@@@
                 import xlwt
 
-                font0 = xlwt.Font()
-                font0.name = 'Times New Roman'
-                font0.colour_index = 2
-                font0.bold = True
-
-                style0 = xlwt.XFStyle()
-                style0.font = font0
-
-                style1 = xlwt.XFStyle()
-                style1.num_format_str = 'D-MMM-YY'
-
                 wb = xlwt.Workbook()
                 ws = wb.add_sheet('Prodct Qty Info')
 
-                ws.write(0, 0, 'Product', style0)
-                ws.write(0, 1, 'Qty', style0)
+                ws.write(0, 0, 'Product')
+                ws.write(0, 1, 'Qty')
                 ws.write(1, 0, display)
                 ws.write(1, 1, incoming_qty)
                 print "\n\n*****",incoming_qty
-                wb.save('Product_stock_info.xls')
+                wb.save('/home/aanad/workspace/7.0-roach/partner_extended/Product_stock_info.xls')
+                attach_id = attach_obj.create(cr, uid, {'name':'Incoming stock Details','datas_fname':'Product_stock_info.xls','datas':('Product_stock_info.xls').encode('base64')})
+                print "attch id",attach_id
     			#@@@@@@@@@@@@@@@@@
                 if mail_to:
                     vals = {
@@ -146,10 +140,11 @@ class sale_order(osv.osv):
                             'body_html': body,
                             'email_to': mail_to,
                             'email_from': admin_email,
-							'datas_fname':Product_stock_info.xls,
                         }
                     
                     mail_ids.append(mail_mail.create(cr, uid, vals, context=context))
+                    print "\n\n***",mail_ids
+                    mail_mail.write(cr, uid, mail_ids, {'attachment_ids': [(6,0,[attach_id])]}, context=context)
                     mail_mail.send(cr, uid, mail_ids, auto_commit=True, context=context)
         return True
 

@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 import time
+import base64
+from xml.etree import ElementTree
 import openerp.exceptions
 from openerp import netsvc
 from openerp import pooler
@@ -49,6 +51,7 @@ class sale_order(osv.osv):
     }
 
     def do_run_scheduler_stock(self, cr, uid, automatic=False, use_new_cursor=False, context=None):
+        print "\n\n*****schedular called",
         """Scheduler for Task reminder
         @param self: The object pointer
         @param cr: the current row, from the database cursor,
@@ -60,6 +63,7 @@ class sale_order(osv.osv):
         if context is None:
             context = {}
         mail_mail = self.pool.get('mail.mail')
+        attach_obj = self.pool.get('ir.attachment')
         product_obj = self.pool.get('product.product')
         move_obj = self.pool.get('stock.move')
         warehouse_obj = self.pool.get('stock.warehouse')
@@ -67,9 +71,9 @@ class sale_order(osv.osv):
         line_ids = []
         mail_to = ""
         mail_ids = []  
-         
+        date = ""
         admin_email = self.pool.get('res.users').browse(cr, uid, [1])[0].email
-        
+        print "\n\n***",admin_email
         today = time.strftime('%Y-%m-%d')
 
         
@@ -80,7 +84,8 @@ class sale_order(osv.osv):
         warehouse_ids = warehouse_obj.search(cr, uid, [], context=context)        
         for loc in warehouse_obj.browse(cr, uid, warehouse_ids, context=context):
             stock_location = loc.lot_stock_id.id   
-            incoming_ids = move_obj.search(cr, uid, [('location_id','in', [stock_location]),('state', '=', 'done')]) 
+            incoming_ids = move_obj.search(cr, uid, [('location_id','in', [stock_location]),('state', '=', 'done')])
+            print "incoming ids",incoming_ids
             if incoming_ids:
                 real = 0.0
                 incoming_qty = ''
@@ -88,6 +93,7 @@ class sale_order(osv.osv):
                     real += move.product_id.qty_available
                     incoming_qty += move.product_id.name + ',' + str(move.product_qty) + '\n'
                     date = move.date
+        print "las_date=",last_date,"date=",date
         if last_date < date:
             
 
@@ -111,8 +117,22 @@ class sale_order(osv.osv):
                 
                 
                 \n %s""" % (display,incoming_qty)
-    
-    
+				# following code is for creating xls file for the prodct name and stock
+				#@@@@@@@@@@@@@@@@@
+                import xlwt
+
+                wb = xlwt.Workbook()
+                ws = wb.add_sheet('Prodct Qty Info')
+
+                ws.write(0, 0, 'Product')
+                ws.write(0, 1, 'Qty')
+                ws.write(1, 0, display)
+                ws.write(1, 1, incoming_qty)
+                print "\n\n*****",incoming_qty
+                wb.save('/home/aanad/workspace/7.0-roach/partner_extended/Product_stock_info.xls')
+                attach_id = attach_obj.create(cr, uid, {'name':'Incoming stock Details','datas_fname':'Product_stock_info.xls','datas':('Product_stock_info.xls').encode('base64')})
+                print "attch id",attach_id
+    			#@@@@@@@@@@@@@@@@@
                 if mail_to:
                     vals = {
                             'state': 'outgoing',
@@ -123,6 +143,8 @@ class sale_order(osv.osv):
                         }
                     
                     mail_ids.append(mail_mail.create(cr, uid, vals, context=context))
+                    print "\n\n***",mail_ids
+                    mail_mail.write(cr, uid, mail_ids, {'attachment_ids': [(6,0,[attach_id])]}, context=context)
                     mail_mail.send(cr, uid, mail_ids, auto_commit=True, context=context)
         return True
 
@@ -193,7 +215,7 @@ class sale_order(osv.osv):
             'target': 'new',
             'context': ctx,
         }
-    def print_quotation(self, cr, uid, ids, context=None):
+    def print_quotation_report(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         data = self.read(cr, uid, ids)[0]
