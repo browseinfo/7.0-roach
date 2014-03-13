@@ -234,7 +234,7 @@
                 <td style="width: 15%; text-align: right;"></td>
                 <td style="width: 15%; text-align: right;"></td>
                 <td style="width: 35%; text-align: right;"></td>
-                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;">${ fill_star(o.amount_untaxed) } ${ fill_stars(o.amount_untaxed) }</td>
                 <td style="width: 15%; text-align: right;"></td>
             </tr>
             <tr>

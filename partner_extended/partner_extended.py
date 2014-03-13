@@ -234,10 +234,12 @@ class account_invoice(osv.osv):
     _columns = {
         'shipping_date': fields.date('Shipping Date'),
         'account_invoice_create': fields.date('Invoice Creation Date'),
+		'create_time': fields.char('Invoice Creation Time'),
         }
 
     _defaults = {
-        'account_invoice_create': lambda *a: time.strftime('%Y-%m-%d')
+        'account_invoice_create': lambda *a: time.strftime('%Y-%m-%d'),
+		'create_time': datetime.now().time(),
     }
 
     def account_invoice(self, cr, uid, ids, context=None):

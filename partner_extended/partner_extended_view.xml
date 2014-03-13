@@ -92,7 +92,11 @@
                 <xpath expr="//field[@name='date_invoice']" position="after">
                     <field name="shipping_date"/>
                     <field name="account_invoice_create"/>
+					<field name="create_time"/>
                 </xpath>
+				<xpath expr="//field[@name='origin']" position="attributes">
+					<attribute name="string">irsaliye No</attribute>
+				</xpath>
              </field>
         </record>
 
@@ -154,16 +158,6 @@
 				</xpath>
 				<xpath expr="//field[@name='message']" position="after">
 					<field name="sale_order_id"/>
-				</xpath>
-			</field>
-		</record>
-		<record id="account_invoice_form_view_extended" model="ir.ui.view">
-            <field name="name">account.invoice.extended</field>
-            <field name="model">account.invoice</field>
-			<field name="inherit_id" ref="account.invoice_form"/>
-            <field name="arch" type="xml">
-				<xpath expr="//field[@name='origin']" position="attributes">
-					<attribute name="string">Irsaliye No</attribute>
 				</xpath>
 			</field>
 		</record>

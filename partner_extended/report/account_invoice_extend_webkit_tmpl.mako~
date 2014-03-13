@@ -234,7 +234,7 @@
                 <td style="width: 15%; text-align: right;"></td>
                 <td style="width: 15%; text-align: right;"></td>
                 <td style="width: 35%; text-align: right;"></td>
-                <td style="width: 15%; text-align: right;"></td>
+                <td style="width: 15%; text-align: right;">${ total_in_words(o.amount_untaxed) }</td>
                 <td style="width: 15%; text-align: right;"></td>
             </tr>
             <tr>
