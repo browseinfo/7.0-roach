@@ -57,7 +57,7 @@ class account_webkit(report_sxw.rml_parse):
         amount_word = amount_to_text(amount)
         word = amount_word.upper()
         translation = Translator(to_lang="tr").translate(word)
-        translation = translation.lower().replace('euro','TL').replace('cents','KR').replace('cent','KR').replace(' ','').replace(',','')
+        translation = translation.lower().replace('euro','TL').replace('cents','KR').replace('cent','KR').replace(' ','')
         return translation
 
 report_sxw.report_sxw('report.account.invoice.webkit', 'account.invoice', '7.0-roach/partner_extended/report/account_invoice_extend_webkit_tmpl.mako', parser=account_webkit, header=False)
