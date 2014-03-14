@@ -239,7 +239,7 @@ class account_invoice(osv.osv):
 
     _defaults = {
         'account_invoice_create': lambda *a: time.strftime('%Y-%m-%d'),
-		'create_time': datetime.now().time(),
+		'create_time': str(datetime.now().time())[0:5],
     }
 
     def account_invoice(self, cr, uid, ids, context=None):
