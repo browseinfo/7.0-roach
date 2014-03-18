@@ -241,7 +241,7 @@
             </tr>
             <tr>
                 <td style="width: 3%; text-align: left;"></td>
-                <td style="width: 61%; text-align: left;"> ${ amount2words(o.amount_total) }</td>
+                <td style="width: 61%; text-align: left;"> ${ amount2words(o.amount_total, o.partner_id) }</td>
                 <td style="width: 1%; text-align: right;"></td>
                 <td style="width: 15%; text-align: right;"></td>
                 <td style="width: 20%; text-align: right; margin-right: 10px;">${ o.amount_untaxed }</td>

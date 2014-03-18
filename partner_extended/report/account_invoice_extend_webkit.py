@@ -53,11 +53,19 @@ class account_webkit(report_sxw.rml_parse):
             vat = vat[2:length]
         return vat
 
-    def amount_to_words(self, amount):
+    def amount_to_words(self, amount, partner):
         amount_word = amount_to_text(amount)
         word = amount_word.upper()
         translation = Translator(to_lang="tr").translate(word)
-        translation = translation.lower().replace('euro','TL').replace('cents','KR').replace('cent','KR').replace(' ','')
+        translation = translation.lower().replace('eighty','seksen').replace('ten','on').replace('sifir','slflr').replace(' ','').replace(',','')
+        if partner.property_product_pricelist:
+            currency = partner.property_product_pricelist.currency_id.name
+            if currency == 'EUR':
+                translation = translation.replace('euro','AVRO').replace('cents','SENTS').replace('cent','SENT')
+            if currency in ['USD','GBP']:
+                translation = translation.replace('euro','DOLAR').replace('cents','SENTS').replace('cent','SENT')
+            if currency == 'TRL':
+                translation = translation.replace('euro','TL').replace('cents','KR').replace('cent','KR')
         return translation
 
 report_sxw.report_sxw('report.account.invoice.webkit', 'account.invoice', '7.0-roach/partner_extended/report/account_invoice_extend_webkit_tmpl.mako', parser=account_webkit, header=False)
