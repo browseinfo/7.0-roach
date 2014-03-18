@@ -53,18 +53,17 @@ class account_webkit(report_sxw.rml_parse):
             vat = vat[2:length]
         return vat
 
-    def amount_to_words(self, amount, partner):
+    def amount_to_words(self, amount, currency):
         amount_word = amount_to_text(amount)
         word = amount_word.upper()
         translation = Translator(to_lang="tr").translate(word)
-        translation = translation.lower().replace('eighty','seksen').replace('ten','on').replace('sifir','slflr').replace(' ','').replace(',','')
-        if partner.property_product_pricelist:
-            currency = partner.property_product_pricelist.currency_id.name
-            if currency == 'EUR':
+        translation = translation.lower().replace('eighty','seksen').replace('ten','on').replace('sifir',ustr('sıfır‏')).replace(' ','').replace(',','').replace('ve','').replace('bir','')
+        if currency:
+            if currency.name == 'EUR':
                 translation = translation.replace('euro','AVRO').replace('cents','SENTS').replace('cent','SENT')
-            if currency in ['USD','GBP']:
+            if currency.name == 'USD':
                 translation = translation.replace('euro','DOLAR').replace('cents','SENTS').replace('cent','SENT')
-            if currency == 'TRL':
+            if currency.name == 'TRL':
                 translation = translation.replace('euro','TL').replace('cents','KR').replace('cent','KR')
         return translation
 
