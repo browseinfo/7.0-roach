@@ -63,7 +63,7 @@ class account_webkit(report_sxw.rml_parse):
                 translation = translation.replace('euro','AVRO').replace('cents','SENTS').replace('cent','SENT')
             if currency.name == 'USD':
                 translation = translation.replace('euro','DOLAR').replace('cents','SENTS').replace('cent','SENT')
-            if currency.name == 'TRL':
+            if currency.name == 'TRY':
                 translation = translation.replace('euro','TL').replace('cents','KR').replace('cent','KR')
         return translation
 
