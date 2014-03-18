@@ -57,7 +57,9 @@ class account_webkit(report_sxw.rml_parse):
         amount_word = amount_to_text(amount)
         word = amount_word.upper()
         translation = Translator(to_lang="tr").translate(word)
-        translation = translation.lower().replace('eighty','seksen').replace('ten','on').replace('sifir',ustr('sıfır‏')).replace(' ','').replace(',','').replace('ve','').replace('bir','')
+        if translation.lower()[:3] == 'bir':
+            translation = translation[3:]
+        translation = translation.lower().replace('eighty','seksen').replace('ten','on').replace('sifir',ustr('sıfır‏')).replace(' ','').replace(',','').replace('ve','')
         if currency:
             if currency.name == 'EUR':
                 translation = translation.replace('euro','AVRO').replace('cents','SENTS').replace('cent','SENT')
