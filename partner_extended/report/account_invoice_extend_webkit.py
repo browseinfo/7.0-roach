@@ -10,6 +10,9 @@ class account_webkit(report_sxw.rml_parse):
         super(account_webkit, self).__init__(cr, uid, name, context=context)
         self.page_total = 0.0
         self.record_len = 0.0
+        self.ucluler=["","bin","milyon","milyar","trilyon","katrilyon","kentilyon",
+             "sekstilyon","oktilyon","nonilyon","desilyon"]
+
         self.localcontext.update({
             'time': time,
             'get_page_break' : self.get_page_break,
@@ -18,7 +21,7 @@ class account_webkit(report_sxw.rml_parse):
             'get_page_header' : self.get_page_header,
             'get_partner_name': self.get_partner_name,
             'get_vat': self.get_vat,
-            'amount2words': self.amount_to_words,
+            'amount2words': self.nu2word,
         })
         self.context = context.copy()       
     def get_page_header(self):
@@ -53,22 +56,48 @@ class account_webkit(report_sxw.rml_parse):
             vat = vat[2:length]
         return vat
 
-    def amount_to_words(self, amount, currency):
-        amount_word = amount_to_text(amount)
-        word = amount_word.upper()
-        translation = Translator(to_lang="tr").translate(word)
-        if translation.lower()[:3] == 'bir':
-            translation = translation[3:]
-        translation = translation.lower().replace('eighty','seksen').replace('ten','on').replace('sifir',ustr('sıfır‏')).replace(' ','').replace(',','').replace('ve','')
-        if currency:
-            if currency.name == 'EUR':
-                translation = translation.replace('euro','AVRO').replace('cents','SENTS').replace('cent','SENT')
-            if currency.name == 'USD':
-                translation = translation.replace('euro','DOLAR').replace('cents','SENTS').replace('cent','SENT')
-            if currency.name == 'TRY':
-                translation = translation.replace('euro','TL').replace('cents','KR').replace('cent','KR')
+    def nu2word(self,sayi, currency):
+        sayi =  str(sayi).split('.')
+        translation1 = self.return_number(float(sayi[0]))
+        translation2 = self.return_number(float(sayi[1]))
+        translation = translation1 + translation2
+        if currency.name == 'EUR':
+            translation = translation1 + 'AVRO' + translation2 + 'SENT'
+        if currency.name == 'USD':
+            translation = translation1 + 'DOLAR' + translation2 + 'SENT'
+        if currency.name == 'TRY':
+            translation = translation1 + 'TL' + translation2 + 'KR'
         return translation
+    def ucluyuVer(self,sayi):
+        birler = ["","bir","iki",ustr("üç"),ustr("dört"),"bes","alti","yedi","sekiz","dokuz"]
+        onlar = ["","on","yirmi","otuz","kirk","elli","altmis","yetmis","seksen","doksan"]
+        yuzler = [i+ustr("yüz") for i in birler]
+        yuzler[1] = ustr("yüz")
 
+        basamaklar = [birler,onlar,yuzler]
+
+        sayi = sayi[::-1]
+        yazi,bs = [],0
+        for i in sayi:
+            rakam = sayi[bs]
+            bs += 1
+            if rakam != "0":
+                yazi.append(basamaklar[bs-1][int(rakam)])
+        return "".join(reversed(yazi))
+
+    def return_number(self,sayi):
+	    sayi = '{:,}'.format(int(sayi))
+	    haneler = reversed(sayi.split(","))
+	    uclus,sonuc = 0,[]
+	    for hane in haneler:
+		    uclu = self.ucluyuVer(hane)
+		    if uclu != "":
+			    sonuc.append(uclu+""+ self.ucluler[uclus])
+		    uclus+=1
+	    son = "".join(reversed(sonuc))
+	    if son.startswith('birbin'):
+		    son = son[3:]
+	    return(son.strip())
 report_sxw.report_sxw('report.account.invoice.webkit', 'account.invoice', '7.0-roach/partner_extended/report/account_invoice_extend_webkit_tmpl.mako', parser=account_webkit, header=False)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
