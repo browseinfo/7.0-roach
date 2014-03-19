@@ -59,7 +59,10 @@ class account_webkit(report_sxw.rml_parse):
     def nu2word(self,sayi, currency):
         sayi =  str(sayi).split('.')
         translation1 = self.return_number(float(sayi[0]))
-        translation2 = self.return_number(float(sayi[1]))
+        if sayi[1] == '00':
+            translation2 = ustr('sıfır‏')
+        else:
+            translation2 = self.return_number(float(sayi[1]))
         translation = translation1 + translation2
         if currency.name == 'EUR':
             translation = translation1 + 'AVRO' + translation2 + 'SENT'
