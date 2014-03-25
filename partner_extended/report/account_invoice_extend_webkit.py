@@ -73,7 +73,7 @@ class account_webkit(report_sxw.rml_parse):
         return translation
     def ucluyuVer(self,sayi):
         birler = ["","bir","iki",ustr("üç"),ustr("dört"),"bes","alti","yedi","sekiz","dokuz"]
-        onlar = ["","on","yirmi","otuz","kirk","elli","altmis","yetmis","seksen","doksan"]
+        onlar = ["","on","yirmi","otuz","kirk","elli",ustr("altmış‏"),"yetmis","seksen","doksan"]
         yuzler = [i+ustr("yüz") for i in birler]
         yuzler[1] = ustr("yüz")
 
