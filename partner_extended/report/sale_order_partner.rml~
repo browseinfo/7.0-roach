@@ -5442,7 +5442,7 @@ o6UhoABmjBpaKADHFAoNAoATByaOaWjmgBMUtHOKKACjFA4NJQAtFFFAH//Z
             <para style="P6">[[ line.product_id and line.product_id.default_code or '' ]]</para>
           </td>
           <td>
-            <para style="terp_default_9">[[ format(line.name) ]] </para>
+            <para style="terp_default_9">[[ format(line.product_id.name or '') ]] </para>
           </td>
           <td>
             <para style="terp_default_Right_9">[[ get_formate(line.price_unit) ]]</para>
@@ -5474,11 +5474,11 @@ o6UhoABmjBpaKADHFAoNAoATByaOaWjmgBMUtHOKKACjFA4NJQAtFFFAH//Z
           </para>
         </td>
         <td>
-          <para style="terp_default_9">[[((o.visible_discount==False) or removeParentNode('para')) and '']]Indirim
+          <para style="terp_default_9">[[((o.visible_discount==True or o.discount_amt==0.00) and removeParentNode('para')) and '']]Indirim
 </para>
         </td>
         <td>
-          <para style="terp_default_Right_9">[[((o.visible_discount==False) or removeParentNode('para')) and '']][[ formatLang(o.discount_amt, dp='Account', currency_obj=o.pricelist_id.currency_id) ]]</para>
+          <para style="terp_default_Right_9">[[((o.visible_discount==True or o.discount_amt==0.00) and removeParentNode('para')) and '']][[ formatLang(o.discount_amt, dp='Account', currency_obj=o.pricelist_id.currency_id) ]]</para>
         </td>
       </tr>
       <tr>
@@ -5488,10 +5488,10 @@ o6UhoABmjBpaKADHFAoNAoATByaOaWjmgBMUtHOKKACjFA4NJQAtFFFAH//Z
           </para>
         </td>
         <td>
-          <para style="terp_default_9">Vergiler :</para>
+          <para style="terp_default_9">[[(( o.amount_tax==0.00) and removeParentNode('para')) and '']]Vergiler :</para>
         </td>
         <td>
-          <para style="terp_default_Right_9">[[ formatLang(o.amount_tax, dp='Account', currency_obj=o.pricelist_id.currency_id) ]]</para>
+          <para style="terp_default_Right_9">[[(( o.amount_tax==0.00) and removeParentNode('para')) and '']] [[ formatLang(o.amount_tax, dp='Account', currency_obj=o.pricelist_id.currency_id) ]]</para>
         </td>
       </tr>
       <tr>
