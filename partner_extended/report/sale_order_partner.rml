@@ -5442,7 +5442,7 @@ o6UhoABmjBpaKADHFAoNAoATByaOaWjmgBMUtHOKKACjFA4NJQAtFFFAH//Z
             <para style="P6">[[ line.product_id and line.product_id.default_code or '' ]]</para>
           </td>
           <td>
-            <para style="terp_default_9">[[ format(line.name) ]] </para>
+            <para style="terp_default_9">[[ format(line.product_id.name or '') ]] </para>
           </td>
           <td>
             <para style="terp_default_Right_9">[[ get_formate(line.price_unit) ]]</para>
