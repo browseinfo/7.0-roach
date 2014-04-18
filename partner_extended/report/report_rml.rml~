@@ -109,7 +109,7 @@
     <paraStyle name="P8" fontName="Helvetica" fontSize="15.0" leading="19" alignment="LEFT"/>
     <paraStyle name="P9" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0" textColor="#000000"/>
     <paraStyle name="P10" fontName="Helvetica" fontSize="12.0" leading="15" alignment="LEFT" textColor="#000000"/>
-	<paraStyle name="P111" fontName="Helvetica" fontSize="3.0" leading="6" alignment="LEFT" textColor="#000000"/>
+	<paraStyle name="P111" fontName="Helvetica" fontSize="5.0" leading="6" alignment="LEFT" textColor="#000000"/>
     <paraStyle name="P100" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="LEFT" textColor="#000000"/>
     <paraStyle name="P11" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="LEFT" textColor="#000000"/>
     <paraStyle name="P12" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="LEFT" textColor="#000000"/>
@@ -542,11 +542,14 @@ AP39f+S6Nm180M28AAAAAElFTkSuQmCC
         </td>
       </tr>
       </blockTable>
-    <blockTable colWidths="115.0,160.0,100.0,100.0" style="color">
+    <blockTable colWidths="100.0,100.0,160.0,100.0,100.0" style="color">
       <tr>
         <td>
           <para> <font color="white"> Adet</font></para>
         </td>
+        <td>
+          <para> <font color="white"> Ürün Kodu</font></para>
+        </td>		
         <td>
           <para><font color="white">Ürün Adı</font></para>
         </td>
@@ -560,10 +563,13 @@ AP39f+S6Nm180M28AAAAAElFTkSuQmCC
     </blockTable>
     <section>
     <para style="terp_default_8">[[ repeatIn((o.order_line),'line') ]]</para>
-    <blockTable colWidths="115.0,160.0,100.0,100.0">
+    <blockTable colWidths="100.0,100.0,160.0,100.0,100.0">
       <tr>
         <td>
           <para style="P10">[[line.product_uom_qty]]</para>
+        </td>
+        <td>
+          <para style="P10">[[line.product_id.default_code or '']]</para>
         </td>
         <td>
           <para style="P10">[[line.product_id.name]]</para>
