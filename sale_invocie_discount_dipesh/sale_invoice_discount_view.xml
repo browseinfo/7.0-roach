@@ -63,11 +63,16 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
-                <field name="payment_term" position="before">
+                <field name="payment_term" position="after">
+                	<group width="20%%">
                         <label for="discount_method"/>
                         <div>
                             <field name="discount_method" class="oe_inline"/>
                         </div>
+                        <label for="version" attrs="{'invisible': [('discount_method', '=', 'per')]}"/>
+                        <div>
+                        	<field name="version" class="oe_inline" attrs="{'invisible': [('discount_method', '=', 'per')]}"/>
+                        </div>                        
                          <label for="discount_amount"/>
                         <div>
                             <field name="discount_amount" class="oe_inline"/>
@@ -77,6 +82,7 @@
                                 class="oe_edit_only oe_link"
                                 attrs="{'invisible':[('state','not in',('draft','sent'))]}"/>
                          </div>
+                    </group>
                 </field>
                 <field name="amount_untaxed" position="after">
                      <field name="discount_amt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
