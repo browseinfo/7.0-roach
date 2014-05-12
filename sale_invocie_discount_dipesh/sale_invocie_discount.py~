@@ -43,20 +43,19 @@ class sale_order(osv.osv):
             new_amt = 0.0
             for line in order.order_line:
                 val1 += line.price_subtotal
-                val += self._amount_line_tax(cr, uid, line, context=context)
+                val += self._amount_line_tax(cr, uid, line, order, context=context)
             if disc_method =='fix':
                 new_amt = disc_amt
             if disc_method =='per':
                 new_amt = val1 * disc_amt / 100
-            print "\n\n*****val",val                
             res[order.id]['amount_tax'] = cur_obj.round(cr, uid, cur, val)
             res[order.id]['amount_untaxed'] = cur_obj.round(cr, uid, cur, val1)
             res[order.id]['amount_total'] = res[order.id]['amount_untaxed'] + res[order.id]['amount_tax'] - new_amt
             self.write(cr, uid, ids, {'discount_amt': new_amt})
         return res
         
-    def _amount_line_tax(self, cr, uid, line, context=None):
-        print "\n\nlinenenene",line 
+    def _amount_line_tax(self, cr, uid, line,order, context=None):
+        print "\n\nlinenenene",line,order
         val = 0.0
         for c in self.pool.get('account.tax').compute_all(cr, uid, line.tax_id, line.price_subtotal, line.product_uom_qty, line.product_id, line.order_id.partner_id)['taxes']:
             val += c.get('amount', 0.0)
@@ -182,6 +181,23 @@ class sale_order(osv.osv):
         # Care for deprecated _inv_get() hook - FIXME: to be removed after 6.1
         invoice_vals.update(self._inv_get(cr, uid, order, context=context))
         return invoice_vals
+        
+    def button_dummy(self, cr, uid, ids, context=None):
+        sale_browse = self.browse(cr, uid, ids[0])
+        amount = sale_browse.amount_untaxed
+        discount= sale_browse.discount_amt
+        tax = sale_browse.amount_tax
+#        net_amt_for_tax = amount - discount
+#        tax = 0.0
+#        for line in sale_browse.order_line:
+#            tax += line.tax_id[0].amount
+#        new_tax_amt  = net_amt_for_tax * tax
+        new_total = (amount - discount) + tax
+#        sql = "update sale_order set amount_tax=%s, amount_total=%s where id=%s"
+        sql = "update sale_order set amount_total=%s where id=%s"
+        cr.execute(sql, (new_total, ids[0]))                    
+        return True
+        
 
 sale_order()
 
@@ -298,7 +314,6 @@ class account_invoice(osv.osv):
                 res[invoice.id]['amount_tax'] += line.amount
             res[invoice.id]['amount_total'] = res[invoice.id]['amount_tax'] + res[invoice.id]['amount_untaxed'] - new_amt
             self.write(cr, uid, ids, {'discount_amt': new_amt})
-        print "===========res all==========", res
         return res
 
     def _get_invoice_tax(self, cr, uid, ids, context=None):
@@ -314,7 +329,7 @@ class account_invoice(osv.osv):
         return result.keys()
 
     _columns = {
-        
+        'visible_discount': fields.boolean('Hide Discount'),        
         'discount_method': fields.selection([('fix', 'Fixed'),('per', 'Percentage')], 'Discount Method'),
         'discount_amount': fields.float('Discount Amount'),
         'version': fields.selection([('ver1', 'Discount in Total'),('ver2', 'Discount in Unitprice')], 'Version'),        
@@ -386,7 +401,28 @@ class account_invoice(osv.osv):
             self.write(cr, uid, ids, {'discount_amt': new_amtt})
             sql = "update account_invoice set amount_total=%s where id=%s"
             cr.execute(sql, (new_amt, ids[0]))
-        return True    
+        return True  
+
+    def button_reset_taxes(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        ctx = context.copy()
+        ait_obj = self.pool.get('account.invoice.tax')
+        invoice_obj = self.pool.get('account.invoice')
+        account_tax_obj = self.pool.get('account.tax')
+        for id in ids:
+            cr.execute("DELETE FROM account_invoice_tax WHERE invoice_id=%s AND manual is False", (id,))
+            partner = self.browse(cr, uid, id, context=ctx).partner_id
+            if partner.lang:
+                ctx.update({'lang': partner.lang})
+            tax = 0.0
+            for taxe in ait_obj.compute(cr, uid, id, context=ctx).values():
+                tax_id = taxe.get('tax_code_id',False)
+                ait_obj.create(cr, uid, taxe)
+        # Update the stored value (fields.function), so we write to trigger recompute
+        invoice_obj.write(cr, uid, ids, {'invoice_line':[]}, context=ctx)
+        return True
+          
 
 account_invoice()
 
@@ -403,13 +439,11 @@ class account_invoice_line(osv.osv):
                 price = line.price_unit - line.discount
             if line.discount_method =='per':
                 price = line.price_unit * (1-(line.discount or 0.0)/100.0)
-            print "==========price==========", price
             taxes = tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, price, line.quantity, product=line.product_id, partner=line.invoice_id.partner_id)
             res[line.id] = taxes['total']
             if line.invoice_id:
                 cur = line.invoice_id.currency_id
                 res[line.id] = cur_obj.round(cr, uid, cur, res[line.id])
-        print "============res===================", res        
         return res
 
     _columns = {

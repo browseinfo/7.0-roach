@@ -63,8 +63,12 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
-                <field name="payment_term" position="after">
-                	<group width="20%%">
+                <field name="payment_term" position="replace">
+                	<!--group style="width: 50%%">
+                	</group-->
+					<group style="width: 40%%">
+						<field name="visible_discount" class="oe_inline"/>
+						<field name="payment_term" widget="selection"/>
                         <label for="discount_method"/>
                         <div>
                             <field name="discount_method" class="oe_inline"/>
@@ -85,14 +89,16 @@
                     </group>
                 </field>
                 <field name="amount_untaxed" position="after">
-                     <field name="discount_amt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                     <field name="discount_amt" widget="monetary" options="{'currency_field': 'currency_id'}" attrs="{'invisible': [('visible_discount','=', True)]}"/>
                 </field>
                 <xpath expr="//field[@name='invoice_line']/tree//field[@name='price_unit']" position="after">
                     <field name="discount_method" />
                 </xpath>
                 <xpath expr="//field[@name='invoice_line']/tree//field[@name='discount']" position="replace">
-                    <field name="discount" string="Discount"/>
+                    <field name="discount" class="oe_inline" string="Discount" attrs="{'invisible': [('visible_discount','=', True)]}"/>
+                    <field name="visible_discount" class="oe_inline"/>
                 </xpath>
+                
             </field>
         </record>
         <record id="base_partner_extended_form_group_customer_manager_view" model="ir.ui.view">
