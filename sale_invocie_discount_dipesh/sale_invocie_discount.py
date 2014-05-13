@@ -187,15 +187,17 @@ class sale_order(osv.osv):
         amount = sale_browse.amount_untaxed
         discount= sale_browse.discount_amt
         tax = sale_browse.amount_tax
-#        net_amt_for_tax = amount - discount
-#        tax = 0.0
-#        for line in sale_browse.order_line:
-#            tax += line.tax_id[0].amount
-#        new_tax_amt  = net_amt_for_tax * tax
-        new_total = (amount - discount) + tax
-#        sql = "update sale_order set amount_tax=%s, amount_total=%s where id=%s"
-        sql = "update sale_order set amount_total=%s where id=%s"
-        cr.execute(sql, (new_total, ids[0]))                    
+        net_amt_for_tax = amount - discount
+        tax = 0.0
+        for line in sale_browse.order_line:
+            if line.tax_id:
+                tax += line.tax_id[0].amount
+        new_tax_amt  = net_amt_for_tax * tax
+        new_total = net_amt_for_tax + new_tax_amt
+#        new_total = (amount - discount) + tax
+        sql = "update sale_order set amount_tax=%s, amount_total=%s where id=%s"
+#        sql = "update sale_order set amount_total=%s where id=%s"
+        cr.execute(sql, (new_tax_amt,new_total, ids[0]))                    
         return True
         
 
@@ -417,10 +419,21 @@ class account_invoice(osv.osv):
                 ctx.update({'lang': partner.lang})
             tax = 0.0
             for taxe in ait_obj.compute(cr, uid, id, context=ctx).values():
-                tax_id = taxe.get('tax_code_id',False)
                 ait_obj.create(cr, uid, taxe)
         # Update the stored value (fields.function), so we write to trigger recompute
         invoice_obj.write(cr, uid, ids, {'invoice_line':[]}, context=ctx)
+        invoice_browse = invoice_obj.browse(cr, uid, ids[0], context=ctx)
+        amt_untaxed = invoice_browse.amount_untaxed
+        discount_amt = invoice_browse.discount_amt
+        new_amt_for_tax = amt_untaxed - discount_amt
+        tax = 0.0
+        for line in invoice_browse.invoice_line:
+            if line.invoice_line_tax_id:
+                tax += line.invoice_line_tax_id[0].amount
+        new_tax_amt = new_amt_for_tax * tax
+        new_total = new_amt_for_tax + new_tax_amt
+        sql = "update account_invoice set amount_tax=%s, amount_total=%s where id=%s"
+        cr.execute(sql, (new_tax_amt,new_total, ids[0]))                
         return True
           
 
