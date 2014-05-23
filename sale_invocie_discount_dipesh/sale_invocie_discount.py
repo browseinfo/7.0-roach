@@ -191,7 +191,8 @@ class sale_order(osv.osv):
         tax = 0.0
         for line in sale_browse.order_line:
             if line.tax_id:
-                tax += line.tax_id[0].amount
+                tax = line.tax_id[0].amount
+                break
         new_tax_amt  = net_amt_for_tax * tax
         new_total = net_amt_for_tax + new_tax_amt
 #        new_total = (amount - discount) + tax
@@ -429,7 +430,8 @@ class account_invoice(osv.osv):
         tax = 0.0
         for line in invoice_browse.invoice_line:
             if line.invoice_line_tax_id:
-                tax += line.invoice_line_tax_id[0].amount
+                tax = line.invoice_line_tax_id[0].amount
+                break
         new_tax_amt = new_amt_for_tax * tax
         new_total = new_amt_for_tax + new_tax_amt
         sql = "update account_invoice set amount_tax=%s, amount_total=%s where id=%s"

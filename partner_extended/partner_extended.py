@@ -51,7 +51,6 @@ class sale_order(osv.osv):
     }
 
     def do_run_scheduler_stock(self, cr, uid, automatic=False, use_new_cursor=False, context=None):
-        print "\n\n*****schedular called",
         """Scheduler for Task reminder
         @param self: The object pointer
         @param cr: the current row, from the database cursor,
@@ -73,7 +72,6 @@ class sale_order(osv.osv):
         mail_ids = []  
         date = ""
         admin_email = self.pool.get('res.users').browse(cr, uid, [1])[0].email
-        print "\n\n***",admin_email
         today = time.strftime('%Y-%m-%d')
 
         
@@ -128,7 +126,6 @@ class sale_order(osv.osv):
                 ws.write(0, 1, 'Qty')
                 ws.write(1, 0, display)
                 ws.write(1, 1, incoming_qty)
-                print "\n\n*****",incoming_qty
                 wb.save('/home/aanad/workspace/7.0-roach/partner_extended/Product_stock_info.xls')
                 attach_id = attach_obj.create(cr, uid, {'name':'Incoming stock Details','datas_fname':'Product_stock_info.xls','datas':('Product_stock_info.xls').encode('base64')})
                 print "attch id",attach_id
